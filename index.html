@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BUNCH mini</title>
+  <title>PION mini</title>
+
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     :root{
       --lime:#b7ff3b;
@@ -12,7 +14,6 @@
       --muted:#777;
       --line:#eaeaea;
       --bg:#fff;
-      --card:#fff;
       --chip:#f2f2f2;
       --radius:16px;
     }
@@ -54,15 +55,33 @@
       font-size:18px;
       display:flex;flex-direction:column;align-items:center;gap:4px;
       padding:4px 0;
+      position:relative;
     }
     .tab span{font-size:12px}
     .tab.active{color:#000;font-weight:700}
+    .badge-count{
+      position:absolute;
+      top:0px;
+      right:26%;
+      min-width:18px;
+      height:18px;
+      padding:0 6px;
+      border-radius:999px;
+      background:#000;
+      color:#fff;
+      font-size:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transform:translate(8px,-6px);
+    }
+    .badge-count.hidden{display:none}
 
-    /* catalog */
+    /* catalog header */
     .headline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
     .logo{font-size:34px;font-weight:900}
-    .citypill{background:#f1f1f1;border-radius:18px;padding:8px 10px;font-size:14px;white-space:nowrap}
 
+    /* chips */
     .chips{display:flex;gap:8px;overflow:auto;padding-bottom:6px}
     .chip{
       border:1px solid #222;background:#fff;border-radius:18px;
@@ -72,19 +91,80 @@
     .chip.small{border-color:#ddd;color:#666;padding:6px 10px}
     .chip.on{background:var(--lime);border-color:var(--lime)}
 
+    /* product grid */
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
     .card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
     .imgwrap{position:relative;aspect-ratio:1/1;background:#eee}
-    .imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
     .badge{position:absolute;top:10px;left:10px;background:#dff2ff;color:#0a4a7a;padding:6px 10px;border-radius:14px;font-size:12px;font-weight:700}
-    .carticon{position:absolute;right:10px;bottom:10px;width:34px;height:34px;background:rgba(0,0,0,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
+    .carticon{
+      position:absolute;right:10px;bottom:10px;
+      width:34px;height:34px;
+      background:rgba(0,0,0,.35);
+      border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;
+      cursor:pointer;
+      user-select:none;
+    }
+    .imgph{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:34px;
+      font-weight:900;
+      color:#222;
+      background:linear-gradient(135deg, #f7f7f7, #e8e8e8);
+    }
+
     .cardbody{padding:10px 10px 12px}
     .title{font-weight:700;margin-bottom:8px}
     .bottom{display:flex;justify-content:space-between;align-items:center}
     .price{font-weight:900}
     .qty{display:flex;align-items:center;gap:10px}
-    .qty button{width:28px;height:28px;border-radius:50%;border:1px solid #ddd;background:#fff;font-size:18px;line-height:1}
-    .qty button:disabled{opacity:.35}
+    .qty button{
+      width:28px;height:28px;border-radius:50%;
+      border:1px solid #ddd;background:#fff;
+      font-size:18px;line-height:1;
+      cursor:pointer;
+    }
+    .qty button:disabled{opacity:.35;cursor:default}
+
+    /* cart */
+    .cart-title{font-size:22px;font-weight:900;margin:6px 0 12px}
+    .cart-list{display:flex;flex-direction:column;gap:10px}
+    .cart-item{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      background:#fff;
+    }
+    .cart-left{display:flex;flex-direction:column;gap:4px}
+    .cart-name{font-weight:800}
+    .cart-price{color:#666;font-size:14px}
+    .cart-bottom{
+      margin-top:14px;
+      border-top:1px solid var(--line);
+      padding-top:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .total{font-size:18px;font-weight:900}
+    .clear{
+      border:1px solid #ddd;
+      background:#fff;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:800;
+      cursor:pointer;
+    }
 
     /* cart empty */
     .empty{min-height:60vh;display:flex;align-items:center;justify-content:center}
@@ -92,7 +172,7 @@
     .panel .icon{font-size:34px;margin-bottom:12px}
     .panel .h{font-size:22px;font-weight:900;margin-bottom:8px}
     .panel .p{color:#666;margin-bottom:18px}
-    .cta{background:var(--lime);border:0;border-radius:18px;padding:14px 16px;font-weight:900;width:70%}
+    .cta{background:var(--lime);border:0;border-radius:18px;padding:14px 16px;font-weight:900;width:70%;cursor:pointer}
 
     /* profile */
     .row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
@@ -117,6 +197,7 @@
     .tile .t{font-weight:800}
   </style>
 </head>
+
 <body>
 <div class="app">
 
@@ -124,7 +205,7 @@
   <div class="topbar">
     <button class="btn-ghost" id="closeBtn">Закрыть</button>
     <div class="center">
-      <div class="brand">BUNCH.</div>
+      <div class="brand">PION</div>
       <div class="sub">мини-приложение</div>
     </div>
     <button class="btn-ghost" aria-label="menu">⋯</button>
@@ -135,8 +216,7 @@
     <!-- CATALOG -->
     <section id="page-catalog">
       <div class="headline">
-        <div class="logo">BUNCH.</div>
-        <div class="citypill">📍 <b>Город</b> Москва</div>
+        <div class="logo">PION</div>
       </div>
 
       <div class="chips" id="cats"></div>
@@ -147,12 +227,23 @@
 
     <!-- CART -->
     <section id="page-cart" class="hidden">
-      <div class="empty" id="cartEmpty">
+      <div class="cart-title">Корзина</div>
+
+      <div id="cartEmpty" class="empty">
         <div class="panel">
           <div class="icon">🛍️</div>
           <div class="h">Ваша корзина пуста</div>
-          <div class="p">Добавьте первый банч, чтобы сделать ваш день ярче ✨</div>
+          <div class="p">Добавьте товары в каталогe, и они появятся здесь.</div>
           <button class="cta" id="goCatalog">Перейти в каталог</button>
+        </div>
+      </div>
+
+      <div id="cartFilled" class="hidden">
+        <div class="cart-list" id="cartList"></div>
+
+        <div class="cart-bottom">
+          <div class="total" id="cartTotal">Итого: 0 ₽</div>
+          <button class="clear" id="clearCart">Очистить</button>
         </div>
       </div>
     </section>
@@ -186,17 +277,14 @@
 
     <!-- ABOUT -->
     <section id="page-about" class="hidden about">
-      <h1>О проекте Bunch.</h1>
-      <p>
-        Bunch. — это проект в сфере цветочного ритейла, который стремится сделать покупку цветов максимально удобной и доступной.
-      </p>
-      <p><b>Наша миссия</b><br/>Мы создаём новый стандарт продажи цветов: свежие цветы по себестоимости с быстрой доставкой.</p>
+      <h1>О проекте PION</h1>
+      <p>Пока тут заглушка. Потом добавишь нормальный текст про сервис, доставку и прочие человеческие радости.</p>
 
       <div class="bigq">Что включает в себя сервисный сбор?</div>
 
-      <div class="tile"><div class="ic">🧾</div><div><div class="t">Сборка на складе</div><div class="muted">Подготовка и комплектация заказа</div></div></div>
-      <div class="tile"><div class="ic">📦</div><div><div class="t">Транспортировочная упаковка</div><div class="muted">Чтобы доехало живым</div></div></div>
-      <div class="tile"><div class="ic">🏷️</div><div><div class="t">Налог</div><div class="muted">Да, это тоже существует</div></div></div>
+      <div class="tile"><div class="ic">🧾</div><div><div class="t">Сборка</div><div class="muted">Комплектация заказа</div></div></div>
+      <div class="tile"><div class="ic">📦</div><div><div class="t">Упаковка</div><div class="muted">Чтобы доехало живым</div></div></div>
+      <div class="tile"><div class="ic">🏷️</div><div><div class="t">Налог</div><div class="muted">Да, он всё ещё существует</div></div></div>
     </section>
 
   </div>
@@ -204,7 +292,10 @@
   <!-- bottom nav -->
   <nav class="bottomnav">
     <a href="#catalog" class="tab active" id="tab-catalog">☰<span>Меню</span></a>
-    <a href="#cart" class="tab" id="tab-cart">🛒<span>Корзина</span></a>
+    <a href="#cart" class="tab" id="tab-cart">
+      🛒<span>Корзина</span>
+      <div class="badge-count hidden" id="cartBadge">0</div>
+    </a>
     <a href="#profile" class="tab" id="tab-profile">👤<span>Профиль</span></a>
     <a href="#about" class="tab" id="tab-about">ℹ️<span>О проекте</span></a>
   </nav>
@@ -217,7 +308,7 @@
   if (tg) { tg.ready(); tg.expand(); }
   document.getElementById("closeBtn").onclick = () => tg?.close();
 
-  // user on profile
+  // Profile: имя (и фото если есть)
   const user = tg?.initDataUnsafe?.user;
   if (user) {
     document.getElementById("username").textContent =
@@ -227,23 +318,78 @@
     }
   }
 
-  // Data (пока мок)
-  const CATEGORIES = ["Все","Экзотика","Сеты","Ранункулюсы","Зелень","Гвоздики"];
-  const TAGS = ["Белые","Красные","Зеленые","Фиолетовые","Розовые","Ароматные","Пионовидные","Стойкие","Высокие"];
+  // Data: заглушки товаров
+  const CATEGORIES = ["Все","Цветы","Сеты","Экзотика"];
+  const TAGS = ["Белые","Красные","Розовые","Ароматные","Стойкие"];
 
-  const PRODUCTS = [
-    {id:"amaryllis", title:"Луковица Амариллиса", price:2900, badge:"Доставим завтра", img:"https://picsum.photos/600/600?1", cat:"Экзотика", tags:["Розовые"]},
-    {id:"red-bunch", title:"Красная охапка", price:8100, badge:"Доставим завтра", img:"https://picsum.photos/600/600?2", cat:"Сеты", tags:["Красные","Высокие"]},
-    {id:"green-bunch", title:"Зеленая охапка", price:4600, badge:"Доставим завтра", img:"https://picsum.photos/600/600?3", cat:"Зелень", tags:["Зеленые","Стойкие"]},
-    {id:"berry-set", title:"Ягодный сет", price:5200, badge:"Доставим завтра", img:"https://picsum.photos/600/600?4", cat:"Сеты", tags:["Фиолетовые"]},
-  ];
+  const PRODUCTS = Array.from({length: 8}).map((_, i) => ({
+    id: "p" + (i + 1),
+    title: "Название товара " + (i + 1),
+    price: 1500 + i * 350,
+    badge: "Доставим завтра",
+    cat: i % 3 === 0 ? "Сеты" : (i % 3 === 1 ? "Цветы" : "Экзотика"),
+    tags: i % 2 === 0 ? ["Розовые","Стойкие"] : ["Красные","Ароматные"],
+    ph: (i + 1) // номер для заглушки в картинке
+  }));
 
   // Cart state (localStorage)
   const cart = JSON.parse(localStorage.getItem("cart") || "{}");
   const saveCart = () => localStorage.setItem("cart", JSON.stringify(cart));
 
-  // UI helpers
   const $ = (id) => document.getElementById(id);
+
+  // Navigation
+  const pages = {
+    catalog: $("page-catalog"),
+    cart: $("page-cart"),
+    profile: $("page-profile"),
+    about: $("page-about")
+  };
+  const tabs = {
+    catalog: $("tab-catalog"),
+    cart: $("tab-cart"),
+    profile: $("tab-profile"),
+    about: $("tab-about")
+  };
+
+  function showPage(name){
+    Object.keys(pages).forEach(k => pages[k].classList.toggle("hidden", k!==name));
+    Object.keys(tabs).forEach(k => tabs[k].classList.toggle("active", k===name));
+    location.hash = name;
+  }
+
+  // tab clicks
+  Object.keys(tabs).forEach(key => {
+    tabs[key].addEventListener("click", (e) => {
+      e.preventDefault();
+      showPage(key);
+    });
+  });
+
+  $("goCatalog").onclick = () => showPage("catalog");
+
+  // state for filters
+  const state = { cat:"Все", tag:null };
+
+  // helpers
+  function qtyOf(id){ return cart[id] || 0; }
+  function cartCount(){
+    return Object.values(cart).reduce((a, b) => a + b, 0);
+  }
+  function cartTotal(){
+    let sum = 0;
+    for (const [id, qty] of Object.entries(cart)) {
+      const p = PRODUCTS.find(x => x.id === id);
+      if (p) sum += p.price * qty;
+    }
+    return sum;
+  }
+
+  function renderBadge(){
+    const n = cartCount();
+    $("cartBadge").textContent = String(n);
+    $("cartBadge").classList.toggle("hidden", n === 0);
+  }
 
   function renderChips() {
     $("cats").innerHTML = CATEGORIES.map(c =>
@@ -266,8 +412,6 @@
     };
   }
 
-  function qtyOf(id){ return cart[id] || 0; }
-
   function renderGrid() {
     const list = PRODUCTS.filter(p => {
       const okCat = state.cat === "Все" || p.cat === state.cat;
@@ -279,8 +423,8 @@
       <div class="card">
         <div class="imgwrap">
           <div class="badge">${p.badge}</div>
-          <img src="${p.img}" alt="">
-          <div class="carticon">🛍️</div>
+          <div class="imgph">${p.ph}</div>
+          <div class="carticon" data-open-cart="1" title="Открыть корзину">🛒</div>
         </div>
         <div class="cardbody">
           <div class="title">${p.title}</div>
@@ -297,54 +441,97 @@
     `).join("");
 
     $("grid").onclick = (e) => {
-      const inc = e.target.closest("button")?.dataset?.inc;
-      const dec = e.target.closest("button")?.dataset?.dec;
-      if (inc) { cart[inc] = (cart[inc]||0)+1; saveCart(); render(); }
+      const btn = e.target.closest("button");
+      const openCart = e.target.closest("[data-open-cart]");
+
+      if (openCart) {
+        showPage("cart");
+        return;
+      }
+
+      if (!btn) return;
+      const inc = btn.dataset.inc;
+      const dec = btn.dataset.dec;
+
+      if (inc) {
+        cart[inc] = (cart[inc]||0) + 1;   // товар "улетает в корзину"
+        saveCart();
+        render();                         // обновляем счетчики/корзину/карточки
+      }
       if (dec) {
-        cart[dec] = (cart[dec]||0)-1;
+        cart[dec] = (cart[dec]||0) - 1;
         if (cart[dec] <= 0) delete cart[dec];
-        saveCart(); render();
+        saveCart();
+        render();
       }
     };
   }
 
   function renderCart() {
     const empty = Object.keys(cart).length === 0;
-    $("cartEmpty").style.display = empty ? "flex" : "none";
+    $("cartEmpty").classList.toggle("hidden", !empty);
+    $("cartFilled").classList.toggle("hidden", empty);
+
+    if (empty) return;
+
+    const items = Object.entries(cart).map(([id, qty]) => {
+      const p = PRODUCTS.find(x => x.id === id);
+      if (!p) return "";
+      return `
+        <div class="cart-item">
+          <div class="cart-left">
+            <div class="cart-name">${p.title}</div>
+            <div class="cart-price">${p.price.toLocaleString("ru-RU")} ₽</div>
+          </div>
+
+          <div class="qty">
+            <button data-dec="${p.id}">–</button>
+            <span>${qty}</span>
+            <button data-inc="${p.id}">+</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    $("cartList").innerHTML = items;
+    $("cartTotal").textContent = "Итого: " + cartTotal().toLocaleString("ru-RU") + " ₽";
+
+    // обработчик +/- внутри корзины
+    $("cartList").onclick = (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+
+      const inc = btn.dataset.inc;
+      const dec = btn.dataset.dec;
+
+      if (inc) {
+        cart[inc] = (cart[inc]||0) + 1;
+        saveCart();
+        render();
+      }
+      if (dec) {
+        cart[dec] = (cart[dec]||0) - 1;
+        if (cart[dec] <= 0) delete cart[dec];
+        saveCart();
+        render();
+      }
+    };
+
+    $("clearCart").onclick = () => {
+      for (const k of Object.keys(cart)) delete cart[k];
+      saveCart();
+      render();
+    };
   }
-
-  // Navigation
-  const pages = {
-    catalog: $("page-catalog"),
-    cart: $("page-cart"),
-    profile: $("page-profile"),
-    about: $("page-about")
-  };
-  const tabs = {
-    catalog: $("tab-catalog"),
-    cart: $("tab-cart"),
-    profile: $("tab-profile"),
-    about: $("tab-about")
-  };
-
-  function showPage(name){
-    Object.keys(pages).forEach(k => pages[k].classList.toggle("hidden", k!==name));
-    Object.keys(tabs).forEach(k => tabs[k].classList.toggle("active", k===name));
-    location.hash = name;
-  }
-
-  $("goCatalog").onclick = () => showPage("catalog");
-
-  // state
-  const state = { cat:"Все", tag:null };
 
   function render(){
     renderChips();
     renderGrid();
     renderCart();
+    renderBadge();
   }
 
-  // initial
+  // initial page
   const start = (location.hash || "#catalog").replace("#","");
   showPage(["catalog","cart","profile","about"].includes(start) ? start : "catalog");
   render();
