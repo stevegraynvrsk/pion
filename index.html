@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Telegram Mini App</title>
+
+  <!-- Это “мостик” между страницей и Telegram -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body { font-family: system-ui, -apple-system, Arial; padding: 18px; }
+    .box { background: #f6f6f6; border-radius: 16px; padding: 16px; }
+    button { background:#b7ff3b; border:0; border-radius:14px; padding:12px 14px; font-weight:700; width:100%; }
+    .muted { color:#666; font-size:14px; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <h1>Mini App работает ✅</h1>
+
+  <div class="box">
+    <div id="hello">Загрузка…</div>
+    <div class="muted" id="hint"></div>
+    <br/>
+    <button id="btn">Отправить сигнал боту</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+
+    if (!tg) {
+      document.getElementById("hello").textContent = "Открой эту страницу внутри Telegram, иначе тут нечему работать 🙂";
+      document.getElementById("hint").textContent = "В обычном браузере Telegram.WebApp не доступен.";
+    } else {
+      tg.ready();
+      tg.expand();
+
+      const user = tg.initDataUnsafe?.user;
+      document.getElementById("hello").textContent =
+        user ? `Привет, ${user.first_name}!` : "Привет! (данных пользователя нет)";
+
+      document.getElementById("hint").textContent =
+        "Если нажать кнопку, я отправлю данные в бота.";
+
+      document.getElementById("btn").onclick = () => {
+        tg.sendData(JSON.stringify({ action: "ping", t: Date.now() }));
+      };
+    }
+  </script>
+</body>
+</html>
