@@ -3,49 +3,351 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My Telegram Mini App</title>
-
-  <!-- Это “мостик” между страницей и Telegram -->
+  <title>BUNCH mini</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
-    body { font-family: system-ui, -apple-system, Arial; padding: 18px; }
-    .box { background: #f6f6f6; border-radius: 16px; padding: 16px; }
-    button { background:#b7ff3b; border:0; border-radius:14px; padding:12px 14px; font-weight:700; width:100%; }
-    .muted { color:#666; font-size:14px; margin-top:10px; }
+    :root{
+      --lime:#b7ff3b;
+      --text:#111;
+      --muted:#777;
+      --line:#eaeaea;
+      --bg:#fff;
+      --card:#fff;
+      --chip:#f2f2f2;
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Arial;background:var(--bg);color:var(--text)}
+    .app{min-height:100vh;padding-bottom:74px}
+
+    /* top bar */
+    .topbar{
+      background:var(--lime);
+      padding:12px 12px 10px;
+      display:grid;
+      grid-template-columns: 90px 1fr 44px;
+      align-items:center;
+      position:sticky;top:0;z-index:10;
+    }
+    .btn-ghost{background:transparent;border:0;font-size:16px;color:#000}
+    .center{text-align:center;line-height:1.1}
+    .brand{font-weight:900;letter-spacing:1px}
+    .sub{font-size:12px;opacity:.7}
+
+    /* content */
+    .content{padding:14px}
+    .hidden{display:none}
+
+    /* bottom nav */
+    .bottomnav{
+      position:fixed;left:0;right:0;bottom:0;
+      background:#fff;border-top:1px solid var(--line);
+      display:flex;justify-content:space-around;
+      padding:10px 6px;
+      z-index:20;
+    }
+    .tab{
+      width:25%;
+      text-align:center;
+      text-decoration:none;
+      color:#666;
+      font-size:18px;
+      display:flex;flex-direction:column;align-items:center;gap:4px;
+      padding:4px 0;
+    }
+    .tab span{font-size:12px}
+    .tab.active{color:#000;font-weight:700}
+
+    /* catalog */
+    .headline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+    .logo{font-size:34px;font-weight:900}
+    .citypill{background:#f1f1f1;border-radius:18px;padding:8px 10px;font-size:14px;white-space:nowrap}
+
+    .chips{display:flex;gap:8px;overflow:auto;padding-bottom:6px}
+    .chip{
+      border:1px solid #222;background:#fff;border-radius:18px;
+      padding:8px 12px;white-space:nowrap;flex:0 0 auto;
+      font-size:14px;
+    }
+    .chip.small{border-color:#ddd;color:#666;padding:6px 10px}
+    .chip.on{background:var(--lime);border-color:var(--lime)}
+
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+    .card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+    .imgwrap{position:relative;aspect-ratio:1/1;background:#eee}
+    .imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
+    .badge{position:absolute;top:10px;left:10px;background:#dff2ff;color:#0a4a7a;padding:6px 10px;border-radius:14px;font-size:12px;font-weight:700}
+    .carticon{position:absolute;right:10px;bottom:10px;width:34px;height:34px;background:rgba(0,0,0,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
+    .cardbody{padding:10px 10px 12px}
+    .title{font-weight:700;margin-bottom:8px}
+    .bottom{display:flex;justify-content:space-between;align-items:center}
+    .price{font-weight:900}
+    .qty{display:flex;align-items:center;gap:10px}
+    .qty button{width:28px;height:28px;border-radius:50%;border:1px solid #ddd;background:#fff;font-size:18px;line-height:1}
+    .qty button:disabled{opacity:.35}
+
+    /* cart empty */
+    .empty{min-height:60vh;display:flex;align-items:center;justify-content:center}
+    .panel{width:min(420px,100%);background:#f6f6f6;border-radius:20px;padding:26px;text-align:center}
+    .panel .icon{font-size:34px;margin-bottom:12px}
+    .panel .h{font-size:22px;font-weight:900;margin-bottom:8px}
+    .panel .p{color:#666;margin-bottom:18px}
+    .cta{background:var(--lime);border:0;border-radius:18px;padding:14px 16px;font-weight:900;width:70%}
+
+    /* profile */
+    .row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .avatar{width:52px;height:52px;border-radius:50%;overflow:hidden;background:#eee;display:flex;align-items:center;justify-content:center}
+    .avatar img{width:100%;height:100%;object-fit:cover}
+    .name{font-size:22px;font-weight:800}
+    .box{background:#f6f6f6;border-radius:14px;padding:16px;margin-bottom:14px}
+    .box h3{margin:0 0 6px 0;font-size:16px}
+    .muted{color:#777}
+    .list{display:flex;flex-direction:column;gap:14px;margin:10px 0 26px}
+    .item{font-size:18px}
+    .bonus{text-align:center;margin-top:10px}
+    .bonus h2{margin:0 0 10px 0;font-size:22px}
+    .score{font-size:38px;font-weight:900;margin:6px 0}
+
+    /* about */
+    .about h1{margin:0 0 10px 0}
+    .about p{color:#555;line-height:1.4}
+    .bigq{font-weight:900;text-align:center;margin:22px 0 12px;font-size:20px}
+    .tile{display:flex;gap:12px;align-items:center;background:#f6f6f6;border-radius:16px;padding:14px;margin-bottom:12px}
+    .tile .ic{width:44px;height:44px;border-radius:12px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900}
+    .tile .t{font-weight:800}
   </style>
 </head>
 <body>
-  <h1>Mini App работает ✅</h1>
+<div class="app">
 
-  <div class="box">
-    <div id="hello">Загрузка…</div>
-    <div class="muted" id="hint"></div>
-    <br/>
-    <button id="btn">Отправить сигнал боту</button>
+  <!-- top bar -->
+  <div class="topbar">
+    <button class="btn-ghost" id="closeBtn">Закрыть</button>
+    <div class="center">
+      <div class="brand">BUNCH.</div>
+      <div class="sub">мини-приложение</div>
+    </div>
+    <button class="btn-ghost" aria-label="menu">⋯</button>
   </div>
 
-  <script>
-    const tg = window.Telegram?.WebApp;
+  <div class="content">
 
-    if (!tg) {
-      document.getElementById("hello").textContent = "Открой эту страницу внутри Telegram, иначе тут нечему работать 🙂";
-      document.getElementById("hint").textContent = "В обычном браузере Telegram.WebApp не доступен.";
-    } else {
-      tg.ready();
-      tg.expand();
+    <!-- CATALOG -->
+    <section id="page-catalog">
+      <div class="headline">
+        <div class="logo">BUNCH.</div>
+        <div class="citypill">📍 <b>Город</b> Москва</div>
+      </div>
 
-      const user = tg.initDataUnsafe?.user;
-      document.getElementById("hello").textContent =
-        user ? `Привет, ${user.first_name}!` : "Привет! (данных пользователя нет)";
+      <div class="chips" id="cats"></div>
+      <div class="chips" style="margin-top:6px" id="tags"></div>
 
-      document.getElementById("hint").textContent =
-        "Если нажать кнопку, я отправлю данные в бота.";
+      <div class="grid" id="grid"></div>
+    </section>
 
-      document.getElementById("btn").onclick = () => {
-        tg.sendData(JSON.stringify({ action: "ping", t: Date.now() }));
-      };
+    <!-- CART -->
+    <section id="page-cart" class="hidden">
+      <div class="empty" id="cartEmpty">
+        <div class="panel">
+          <div class="icon">🛍️</div>
+          <div class="h">Ваша корзина пуста</div>
+          <div class="p">Добавьте первый банч, чтобы сделать ваш день ярче ✨</div>
+          <button class="cta" id="goCatalog">Перейти в каталог</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="page-profile" class="hidden">
+      <div class="row">
+        <div class="avatar" id="avatar">🙂</div>
+        <div class="name" id="username">Пользователь</div>
+      </div>
+
+      <div class="box">
+        <h3>Активный заказ</h3>
+        <div class="muted">У вас нет активных заказов</div>
+      </div>
+
+      <div class="list">
+        <div class="item">📍 Адреса доставки</div>
+        <div class="item">🧳 История заказов</div>
+        <div class="item">💬 Поддержка</div>
+      </div>
+
+      <div class="bonus">
+        <h2>Бонусные баллы</h2>
+        <div class="score">500</div>
+        <div class="muted">баллов</div>
+        <div class="muted" style="margin-top:8px">С каждой покупки вы получаете 1% от суммы заказа в виде баллов</div>
+        <div class="muted" style="margin-top:8px">1 балл = 1 рубль</div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="page-about" class="hidden about">
+      <h1>О проекте Bunch.</h1>
+      <p>
+        Bunch. — это проект в сфере цветочного ритейла, который стремится сделать покупку цветов максимально удобной и доступной.
+      </p>
+      <p><b>Наша миссия</b><br/>Мы создаём новый стандарт продажи цветов: свежие цветы по себестоимости с быстрой доставкой.</p>
+
+      <div class="bigq">Что включает в себя сервисный сбор?</div>
+
+      <div class="tile"><div class="ic">🧾</div><div><div class="t">Сборка на складе</div><div class="muted">Подготовка и комплектация заказа</div></div></div>
+      <div class="tile"><div class="ic">📦</div><div><div class="t">Транспортировочная упаковка</div><div class="muted">Чтобы доехало живым</div></div></div>
+      <div class="tile"><div class="ic">🏷️</div><div><div class="t">Налог</div><div class="muted">Да, это тоже существует</div></div></div>
+    </section>
+
+  </div>
+
+  <!-- bottom nav -->
+  <nav class="bottomnav">
+    <a href="#catalog" class="tab active" id="tab-catalog">☰<span>Меню</span></a>
+    <a href="#cart" class="tab" id="tab-cart">🛒<span>Корзина</span></a>
+    <a href="#profile" class="tab" id="tab-profile">👤<span>Профиль</span></a>
+    <a href="#about" class="tab" id="tab-about">ℹ️<span>О проекте</span></a>
+  </nav>
+
+</div>
+
+<script>
+  // Telegram
+  const tg = window.Telegram?.WebApp;
+  if (tg) { tg.ready(); tg.expand(); }
+  document.getElementById("closeBtn").onclick = () => tg?.close();
+
+  // user on profile
+  const user = tg?.initDataUnsafe?.user;
+  if (user) {
+    document.getElementById("username").textContent =
+      [user.first_name, user.last_name].filter(Boolean).join(" ");
+    if (user.photo_url) {
+      document.getElementById("avatar").innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
     }
-  </script>
+  }
+
+  // Data (пока мок)
+  const CATEGORIES = ["Все","Экзотика","Сеты","Ранункулюсы","Зелень","Гвоздики"];
+  const TAGS = ["Белые","Красные","Зеленые","Фиолетовые","Розовые","Ароматные","Пионовидные","Стойкие","Высокие"];
+
+  const PRODUCTS = [
+    {id:"amaryllis", title:"Луковица Амариллиса", price:2900, badge:"Доставим завтра", img:"https://picsum.photos/600/600?1", cat:"Экзотика", tags:["Розовые"]},
+    {id:"red-bunch", title:"Красная охапка", price:8100, badge:"Доставим завтра", img:"https://picsum.photos/600/600?2", cat:"Сеты", tags:["Красные","Высокие"]},
+    {id:"green-bunch", title:"Зеленая охапка", price:4600, badge:"Доставим завтра", img:"https://picsum.photos/600/600?3", cat:"Зелень", tags:["Зеленые","Стойкие"]},
+    {id:"berry-set", title:"Ягодный сет", price:5200, badge:"Доставим завтра", img:"https://picsum.photos/600/600?4", cat:"Сеты", tags:["Фиолетовые"]},
+  ];
+
+  // Cart state (localStorage)
+  const cart = JSON.parse(localStorage.getItem("cart") || "{}");
+  const saveCart = () => localStorage.setItem("cart", JSON.stringify(cart));
+
+  // UI helpers
+  const $ = (id) => document.getElementById(id);
+
+  function renderChips() {
+    $("cats").innerHTML = CATEGORIES.map(c =>
+      `<button class="chip ${state.cat===c ? "on":""}" data-cat="${c}">${c}</button>`
+    ).join("");
+
+    $("tags").innerHTML = TAGS.map(t =>
+      `<button class="chip small ${state.tag===t ? "on":""}" data-tag="${t}">${t}</button>`
+    ).join("");
+
+    $("cats").onclick = (e) => {
+      const b = e.target.closest("button"); if(!b) return;
+      state.cat = b.dataset.cat;
+      render();
+    };
+    $("tags").onclick = (e) => {
+      const b = e.target.closest("button"); if(!b) return;
+      state.tag = (state.tag === b.dataset.tag) ? null : b.dataset.tag;
+      render();
+    };
+  }
+
+  function qtyOf(id){ return cart[id] || 0; }
+
+  function renderGrid() {
+    const list = PRODUCTS.filter(p => {
+      const okCat = state.cat === "Все" || p.cat === state.cat;
+      const okTag = !state.tag || p.tags.includes(state.tag);
+      return okCat && okTag;
+    });
+
+    $("grid").innerHTML = list.map(p => `
+      <div class="card">
+        <div class="imgwrap">
+          <div class="badge">${p.badge}</div>
+          <img src="${p.img}" alt="">
+          <div class="carticon">🛍️</div>
+        </div>
+        <div class="cardbody">
+          <div class="title">${p.title}</div>
+          <div class="bottom">
+            <div class="price">${p.price.toLocaleString("ru-RU")} ₽</div>
+            <div class="qty">
+              <button data-dec="${p.id}" ${qtyOf(p.id)===0 ? "disabled":""}>–</button>
+              <span>${qtyOf(p.id)}</span>
+              <button data-inc="${p.id}">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join("");
+
+    $("grid").onclick = (e) => {
+      const inc = e.target.closest("button")?.dataset?.inc;
+      const dec = e.target.closest("button")?.dataset?.dec;
+      if (inc) { cart[inc] = (cart[inc]||0)+1; saveCart(); render(); }
+      if (dec) {
+        cart[dec] = (cart[dec]||0)-1;
+        if (cart[dec] <= 0) delete cart[dec];
+        saveCart(); render();
+      }
+    };
+  }
+
+  function renderCart() {
+    const empty = Object.keys(cart).length === 0;
+    $("cartEmpty").style.display = empty ? "flex" : "none";
+  }
+
+  // Navigation
+  const pages = {
+    catalog: $("page-catalog"),
+    cart: $("page-cart"),
+    profile: $("page-profile"),
+    about: $("page-about")
+  };
+  const tabs = {
+    catalog: $("tab-catalog"),
+    cart: $("tab-cart"),
+    profile: $("tab-profile"),
+    about: $("tab-about")
+  };
+
+  function showPage(name){
+    Object.keys(pages).forEach(k => pages[k].classList.toggle("hidden", k!==name));
+    Object.keys(tabs).forEach(k => tabs[k].classList.toggle("active", k===name));
+    location.hash = name;
+  }
+
+  $("goCatalog").onclick = () => showPage("catalog");
+
+  // state
+  const state = { cat:"Все", tag:null };
+
+  function render(){
+    renderChips();
+    renderGrid();
+    renderCart();
+  }
+
+  // initial
+  const start = (location.hash || "#catalog").replace("#","");
+  showPage(["catalog","cart","profile","about"].includes(start) ? start : "catalog");
+  render();
+</script>
 </body>
 </html>
