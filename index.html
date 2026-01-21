@@ -3,538 +3,921 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PION mini</title>
-
+  <title>Ne buket</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root{
-      --lime:#b7ff3b;
-      --text:#111;
-      --muted:#777;
-      --line:#eaeaea;
-      --bg:#fff;
-      --chip:#f2f2f2;
-      --radius:16px;
+      --mint:#A7CEBB;         /* фон как на рефе */
+      --ink:#060A07;          /* почти чёрный */
+      --red:#DF3A2C;          /* слэш */
+      --soft:#F6F6F6;
+      --line:#EAEAEA;
+      --muted:#6E6E6E;
+      --radius:18px;
     }
+
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Arial;background:var(--bg);color:var(--text)}
-    .app{min-height:100vh;padding-bottom:74px}
-
-    /* top bar */
-    .topbar{
-      background:var(--lime);
-      padding:12px 12px 10px;
-      display:grid;
-      grid-template-columns: 90px 1fr 44px;
-      align-items:center;
-      position:sticky;top:0;z-index:10;
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:#fff;
+      color:var(--ink);
     }
-    .btn-ghost{background:transparent;border:0;font-size:16px;color:#000}
-    .center{text-align:center;line-height:1.1}
-    .brand{font-weight:900;letter-spacing:1px}
-    .sub{font-size:12px;opacity:.7}
 
-    /* content */
-    .content{padding:14px}
-    .hidden{display:none}
+    /* Layout */
+    .app{min-height:100vh; padding-bottom:78px;}
+    .content{padding:14px 14px 24px;}
+    .hidden{display:none !important;}
 
-    /* bottom nav */
+    /* Topbar */
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      background:var(--mint);
+      padding:14px 12px 10px;
+      border-bottom:1px solid rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .topbar-grid{
+      display:grid;
+      grid-template-columns: 88px 1fr 44px;
+      align-items:center;
+      gap:8px;
+    }
+    .ghost{
+      background:transparent;
+      border:0;
+      font-size:16px;
+      color:var(--ink);
+      padding:8px 10px;
+      border-radius:12px;
+    }
+    .ghost:active{background:rgba(255,255,255,.25)}
+    .brandwrap{ text-align:center; line-height:1.05; }
+    .brand{
+      font-weight:900;
+      letter-spacing:-.6px;
+      font-size:22px;
+      text-transform:lowercase;
+    }
+    .sub{
+      margin-top:4px;
+      font-size:12px;
+      color:rgba(0,0,0,.55);
+      font-weight:700;
+    }
+
+    /* Signature slash */
+    .slash{
+      position:absolute;
+      left:-20%;
+      top:44px;
+      width:140%;
+      height:12px;
+      background:var(--red);
+      transform:rotate(-18deg);
+      transform-origin:center;
+      opacity:.95;
+      filter:saturate(1.05);
+      animation:slashIn .55s ease-out both;
+    }
+    @keyframes slashIn{
+      from{ transform:translateY(-10px) rotate(-18deg); opacity:0; }
+      to{ transform:translateY(0) rotate(-18deg); opacity:.95; }
+    }
+
+    /* Bottom nav */
     .bottomnav{
-      position:fixed;left:0;right:0;bottom:0;
-      background:#fff;border-top:1px solid var(--line);
-      display:flex;justify-content:space-around;
-      padding:10px 6px;
-      z-index:20;
+      position:fixed; left:0; right:0; bottom:0; z-index:60;
+      background:#fff;
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:space-around;
+      padding:10px 8px 12px;
     }
     .tab{
       width:25%;
-      text-align:center;
       text-decoration:none;
-      color:#666;
+      color:var(--muted);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
       font-size:18px;
-      display:flex;flex-direction:column;align-items:center;gap:4px;
-      padding:4px 0;
+      padding:6px 0;
       position:relative;
+      user-select:none;
     }
-    .tab span{font-size:12px}
-    .tab.active{color:#000;font-weight:700}
-    .badge-count{
+    .tab span{font-size:12px; font-weight:700}
+    .tab.active{color:var(--ink)}
+    .tab.active::after{
+      content:"";
       position:absolute;
-      top:0px;
-      right:26%;
+      bottom:2px;
+      width:36px;
+      height:4px;
+      background:var(--red);
+      border-radius:999px;
+      transform:rotate(-10deg);
+    }
+
+    .badge{
+      position:absolute;
+      top:2px;
+      right:28%;
       min-width:18px;
       height:18px;
       padding:0 6px;
       border-radius:999px;
-      background:#000;
+      background:var(--ink);
       color:#fff;
       font-size:12px;
+      font-weight:900;
       display:flex;
       align-items:center;
       justify-content:center;
-      transform:translate(8px,-6px);
+      transform:translate(10px,-6px);
     }
-    .badge-count.hidden{display:none}
+    .badge.hidden{display:none}
 
-    /* catalog header */
-    .headline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
-    .logo{font-size:34px;font-weight:900}
+    /* Hero */
+    .hero{
+      margin:10px 0 14px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      background:#fff;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero h1{
+      margin:0;
+      font-size:34px;
+      letter-spacing:-1.2px;
+      font-weight:950;
+      text-transform:lowercase;
+    }
+    .hero p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-weight:700;
+      line-height:1.25;
+    }
+    .hero .stamp{
+      margin-top:12px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      border:1px solid rgba(0,0,0,.14);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      font-weight:900;
+      background:#fff;
+      color:var(--ink);
+    }
+    .pill.red{
+      border-color:var(--red);
+      color:var(--red);
+    }
 
-    /* chips */
-    .chips{display:flex;gap:8px;overflow:auto;padding-bottom:6px}
+    /* Chips */
+    .chips{
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      padding:2px 0 8px;
+    }
     .chip{
-      border:1px solid #222;background:#fff;border-radius:18px;
-      padding:8px 12px;white-space:nowrap;flex:0 0 auto;
-      font-size:14px;
-    }
-    .chip.small{border-color:#ddd;color:#666;padding:6px 10px}
-    .chip.on{background:var(--lime);border-color:var(--lime)}
-
-    /* product grid */
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
-    .card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
-    .imgwrap{position:relative;aspect-ratio:1/1;background:#eee}
-    .badge{position:absolute;top:10px;left:10px;background:#dff2ff;color:#0a4a7a;padding:6px 10px;border-radius:14px;font-size:12px;font-weight:700}
-    .carticon{
-      position:absolute;right:10px;bottom:10px;
-      width:34px;height:34px;
-      background:rgba(0,0,0,.35);
-      border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      color:#fff;
-      cursor:pointer;
+      flex:0 0 auto;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.16);
+      background:#fff;
+      color:var(--ink);
+      font-weight:900;
+      font-size:13px;
       user-select:none;
     }
-    .imgph{
+    .chip.on{
+      border-color:var(--ink);
+      box-shadow: inset 0 0 0 1px var(--ink);
+    }
+    .chip.small{
+      font-weight:800;
+      color:var(--muted);
+      border-color:rgba(0,0,0,.10);
+    }
+    .chip.small.on{
+      color:var(--ink);
+      border-color:var(--ink);
+      box-shadow: inset 0 0 0 1px var(--ink);
+    }
+
+    /* Grid cards */
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:8px;
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .img{
+      position:relative;
+      aspect-ratio:1/1;
+      background:linear-gradient(135deg, #fafafa, #eaeaea);
+    }
+    .img .ph{
       width:100%;
       height:100%;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:34px;
-      font-weight:900;
-      color:#222;
-      background:linear-gradient(135deg, #f7f7f7, #e8e8e8);
+      font-size:38px;
+      font-weight:950;
+      color:rgba(0,0,0,.75);
+      letter-spacing:-2px;
+      user-select:none;
     }
-
-    .cardbody{padding:10px 10px 12px}
-    .title{font-weight:700;margin-bottom:8px}
-    .bottom{display:flex;justify-content:space-between;align-items:center}
-    .price{font-weight:900}
-    .qty{display:flex;align-items:center;gap:10px}
-    .qty button{
-      width:28px;height:28px;border-radius:50%;
-      border:1px solid #ddd;background:#fff;
-      font-size:18px;line-height:1;
+    .img .tag{
+      position:absolute;
+      top:10px; left:10px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.10);
+      font-size:12px;
+      font-weight:950;
+    }
+    .img .tag.red{
+      border-color:var(--red);
+      color:var(--red);
+    }
+    .img .cornerSlash{
+      position:absolute;
+      right:-22px;
+      bottom:18px;
+      width:90px;
+      height:10px;
+      background:var(--red);
+      transform:rotate(-25deg);
+      opacity:.9;
+    }
+    .img .cartBtn{
+      position:absolute;
+      right:10px;
+      bottom:10px;
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      border:0;
+      background:rgba(0,0,0,.55);
+      color:#fff;
+      font-size:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       cursor:pointer;
     }
-    .qty button:disabled{opacity:.35;cursor:default}
+    .img .cartBtn:active{transform:scale(.96)}
 
-    /* cart */
-    .cart-title{font-size:22px;font-weight:900;margin:6px 0 12px}
-    .cart-list{display:flex;flex-direction:column;gap:10px}
-    .cart-item{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
+    .body{
+      padding:10px 10px 12px;
+    }
+    .title{
+      font-weight:950;
+      font-size:14px;
+      letter-spacing:-.2px;
+      margin:0 0 8px;
+    }
+    .row{
       display:flex;
-      gap:12px;
       align-items:center;
       justify-content:space-between;
+      gap:10px;
+    }
+    .price{
+      font-weight:950;
+      letter-spacing:-.3px;
+    }
+    .qty{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:950;
+    }
+    .qty button{
+      width:28px;height:28px;
+      border-radius:50%;
+      border:1px solid rgba(0,0,0,.14);
+      background:#fff;
+      font-size:18px;
+      cursor:pointer;
+    }
+    .qty button:disabled{opacity:.35; cursor:default}
+    .qty span{min-width:18px; text-align:center}
+
+    /* Cart */
+    .h2{
+      font-size:22px;
+      font-weight:950;
+      letter-spacing:-.6px;
+      margin:6px 0 12px;
+      text-transform:lowercase;
+    }
+
+    .empty{
+      min-height:58vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .panel{
+      width:min(420px, 100%);
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:22px;
+      text-align:center;
+    }
+    .panel .x{
+      font-size:28px;
+      font-weight:950;
+      margin-bottom:8px;
+    }
+    .panel .t{
+      font-size:20px;
+      font-weight:950;
+      margin-bottom:8px;
+    }
+    .panel .p{
+      color:var(--muted);
+      font-weight:700;
+      margin-bottom:14px;
+      line-height:1.25;
+    }
+    .btn{
+      width:80%;
+      padding:14px 14px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.14);
+      background:#fff;
+      font-weight:950;
+      cursor:pointer;
+    }
+    .btn.red{
+      border-color:var(--red);
+      color:#fff;
+      background:var(--red);
+    }
+    .btn:active{transform:scale(.99)}
+
+    .cartList{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .cartItem{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
       background:#fff;
     }
-    .cart-left{display:flex;flex-direction:column;gap:4px}
-    .cart-name{font-weight:800}
-    .cart-price{color:#666;font-size:14px}
-    .cart-bottom{
+    .cartLeft{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:0;
+    }
+    .cartName{
+      font-weight:950;
+      letter-spacing:-.2px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width:220px;
+    }
+    .cartMeta{
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+    }
+    .bar{
       margin-top:14px;
       border-top:1px solid var(--line);
       padding-top:12px;
       display:flex;
-      justify-content:space-between;
       align-items:center;
+      justify-content:space-between;
       gap:10px;
     }
-    .total{font-size:18px;font-weight:900}
+    .total{
+      font-weight:950;
+      font-size:16px;
+    }
     .clear{
-      border:1px solid #ddd;
+      border:1px solid rgba(0,0,0,.14);
       background:#fff;
-      border-radius:12px;
+      border-radius:999px;
       padding:10px 12px;
-      font-weight:800;
+      font-weight:950;
       cursor:pointer;
     }
 
-    /* cart empty */
-    .empty{min-height:60vh;display:flex;align-items:center;justify-content:center}
-    .panel{width:min(420px,100%);background:#f6f6f6;border-radius:20px;padding:26px;text-align:center}
-    .panel .icon{font-size:34px;margin-bottom:12px}
-    .panel .h{font-size:22px;font-weight:900;margin-bottom:8px}
-    .panel .p{color:#666;margin-bottom:18px}
-    .cta{background:var(--lime);border:0;border-radius:18px;padding:14px 16px;font-weight:900;width:70%;cursor:pointer}
-
-    /* profile */
-    .row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-    .avatar{width:52px;height:52px;border-radius:50%;overflow:hidden;background:#eee;display:flex;align-items:center;justify-content:center}
+    /* Profile */
+    .profileTop{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:8px 0 14px;
+    }
+    .avatar{
+      width:54px;height:54px;
+      border-radius:50%;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.10);
+      background:linear-gradient(135deg, #fafafa, #e6e6e6);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:950;
+    }
     .avatar img{width:100%;height:100%;object-fit:cover}
-    .name{font-size:22px;font-weight:800}
-    .box{background:#f6f6f6;border-radius:14px;padding:16px;margin-bottom:14px}
-    .box h3{margin:0 0 6px 0;font-size:16px}
-    .muted{color:#777}
-    .list{display:flex;flex-direction:column;gap:14px;margin:10px 0 26px}
-    .item{font-size:18px}
-    .bonus{text-align:center;margin-top:10px}
-    .bonus h2{margin:0 0 10px 0;font-size:22px}
-    .score{font-size:38px;font-weight:900;margin:6px 0}
+    .name{
+      font-size:22px;
+      font-weight:950;
+      letter-spacing:-.5px;
+      line-height:1.05;
+    }
+    .box{
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:var(--soft);
+      padding:14px;
+      margin-bottom:12px;
+    }
+    .box .bh{
+      font-weight:950;
+      margin-bottom:6px;
+    }
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin:12px 0 18px;
+    }
+    .item{
+      font-weight:900;
+      font-size:16px;
+    }
 
-    /* about */
-    .about h1{margin:0 0 10px 0}
-    .about p{color:#555;line-height:1.4}
-    .bigq{font-weight:900;text-align:center;margin:22px 0 12px;font-size:20px}
-    .tile{display:flex;gap:12px;align-items:center;background:#f6f6f6;border-radius:16px;padding:14px;margin-bottom:12px}
-    .tile .ic{width:44px;height:44px;border-radius:12px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900}
-    .tile .t{font-weight:800}
+    /* How */
+    .how h3{
+      margin:12px 0 8px;
+      font-size:16px;
+      font-weight:950;
+      letter-spacing:-.2px;
+    }
+    .how p{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-weight:700;
+      line-height:1.25;
+    }
+    .tile{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      border:1px solid var(--line);
+      background:var(--soft);
+      border-radius:18px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+    .ic{
+      width:42px;height:42px;border-radius:14px;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.10);
+      display:flex;align-items:center;justify-content:center;
+      font-size:20px;
+    }
+    .tile .tt{font-weight:950}
+    .tile .mm{color:var(--muted); font-weight:700; font-size:13px; margin-top:2px}
+
+    /* Small screens niceties */
+    @media (max-width:360px){
+      .grid{grid-template-columns:1fr}
+      .cartName{max-width:160px}
+    }
   </style>
 </head>
 
 <body>
-<div class="app">
+  <div class="app">
+    <div class="topbar">
+      <div class="slash" aria-hidden="true"></div>
 
-  <!-- top bar -->
-  <div class="topbar">
-    <button class="btn-ghost" id="closeBtn">Закрыть</button>
-    <div class="center">
-      <div class="brand">PION</div>
-      <div class="sub">мини-приложение</div>
+      <div class="topbar-grid">
+        <button class="ghost" id="closeBtn">Закрыть</button>
+        <div class="brandwrap">
+          <div class="brand">ne buket</div>
+          <div class="sub">не клише. не пафос.</div>
+        </div>
+        <button class="ghost" id="dotsBtn" aria-label="menu">⋯</button>
+      </div>
     </div>
-    <button class="btn-ghost" aria-label="menu">⋯</button>
+
+    <div class="content">
+
+      <!-- CATALOG -->
+      <section id="page-catalog">
+        <div class="hero">
+          <h1>ne buket</h1>
+          <p>цветы как стиль. без лишней лирики.</p>
+          <div class="stamp">
+            <div class="pill red">не банально</div>
+            <div class="pill">быстро</div>
+            <div class="pill">честно</div>
+          </div>
+        </div>
+
+        <div class="chips" id="cats"></div>
+        <div class="chips" id="tags"></div>
+
+        <div class="grid" id="grid"></div>
+      </section>
+
+      <!-- CART -->
+      <section id="page-cart" class="hidden">
+        <div class="h2">корзина</div>
+
+        <div id="cartEmpty" class="empty">
+          <div class="panel">
+            <div class="x">ne-что купить?</div>
+            <div class="t">корзина пустая</div>
+            <div class="p">нажми “+” у товара. он улетит сюда мгновенно.</div>
+            <button class="btn red" id="goCatalog">в каталог</button>
+          </div>
+        </div>
+
+        <div id="cartFilled" class="hidden">
+          <div class="cartList" id="cartList"></div>
+
+          <div class="bar">
+            <div class="total" id="cartTotal">итого: 0 ₽</div>
+            <button class="clear" id="clearCart">очистить</button>
+          </div>
+
+          <div style="margin-top:12px; display:flex; justify-content:center;">
+            <button class="btn red" id="checkoutBtn">оформить</button>
+          </div>
+          <div style="margin-top:10px; text-align:center; color:var(--muted); font-weight:700; font-size:12px;">
+            (пока заглушка. потом подключим оплату/оформление.)
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="page-profile" class="hidden">
+        <div class="profileTop">
+          <div class="avatar" id="avatar">NB</div>
+          <div>
+            <div class="name" id="username">Пользователь</div>
+            <div style="color:var(--muted); font-weight:800; margin-top:4px;">аккаунт из Telegram</div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="bh">активный заказ</div>
+          <div style="color:var(--muted); font-weight:700;">пока нет активных заказов</div>
+        </div>
+
+        <div class="list">
+          <div class="item">📍 адреса доставки</div>
+          <div class="item">🧾 история заказов</div>
+          <div class="item">💬 поддержка</div>
+        </div>
+
+        <div class="box">
+          <div class="bh">бонусы</div>
+          <div style="font-size:34px; font-weight:950;">500</div>
+          <div style="color:var(--muted); font-weight:700;">баллов (заглушка)</div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section id="page-how" class="hidden how">
+        <div class="h2">как это работает</div>
+
+        <div class="tile">
+          <div class="ic">🕒</div>
+          <div>
+            <div class="tt">быстро</div>
+            <div class="mm">сегодня/завтра. без созвонов и “ой, сейчас уточню”.</div>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="ic">💸</div>
+          <div>
+            <div class="tt">честно</div>
+            <div class="mm">цена понятная. без театра и “уникальных композиций”.</div>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="ic">🌿</div>
+          <div>
+            <div class="tt">живой товар</div>
+            <div class="mm">цветы живые. иногда возможны замены по наличию.</div>
+          </div>
+        </div>
+
+        <h3>сервисный сбор</h3>
+        <p>если понадобится, объясняем просто: сборка, упаковка, логистика. без магии.</p>
+      </section>
+
+    </div>
+
+    <nav class="bottomnav">
+      <a href="#catalog" class="tab active" id="tab-catalog">☰<span>каталог</span></a>
+      <a href="#cart" class="tab" id="tab-cart">
+        🛒<span>корзина</span>
+        <div class="badge hidden" id="cartBadge">0</div>
+      </a>
+      <a href="#profile" class="tab" id="tab-profile">👤<span>профиль</span></a>
+      <a href="#how" class="tab" id="tab-how">✳️<span>как</span></a>
+    </nav>
   </div>
 
-  <div class="content">
+  <script>
+    // Telegram init
+    const tg = window.Telegram?.WebApp;
+    if (tg) { tg.ready(); tg.expand(); }
 
-    <!-- CATALOG -->
-    <section id="page-catalog">
-      <div class="headline">
-        <div class="logo">PION</div>
-      </div>
+    // Close
+    document.getElementById("closeBtn").onclick = () => tg?.close();
 
-      <div class="chips" id="cats"></div>
-      <div class="chips" style="margin-top:6px" id="tags"></div>
-
-      <div class="grid" id="grid"></div>
-    </section>
-
-    <!-- CART -->
-    <section id="page-cart" class="hidden">
-      <div class="cart-title">Корзина</div>
-
-      <div id="cartEmpty" class="empty">
-        <div class="panel">
-          <div class="icon">🛍️</div>
-          <div class="h">Ваша корзина пуста</div>
-          <div class="p">Добавьте товары в каталогe, и они появятся здесь.</div>
-          <button class="cta" id="goCatalog">Перейти в каталог</button>
-        </div>
-      </div>
-
-      <div id="cartFilled" class="hidden">
-        <div class="cart-list" id="cartList"></div>
-
-        <div class="cart-bottom">
-          <div class="total" id="cartTotal">Итого: 0 ₽</div>
-          <button class="clear" id="clearCart">Очистить</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROFILE -->
-    <section id="page-profile" class="hidden">
-      <div class="row">
-        <div class="avatar" id="avatar">🙂</div>
-        <div class="name" id="username">Пользователь</div>
-      </div>
-
-      <div class="box">
-        <h3>Активный заказ</h3>
-        <div class="muted">У вас нет активных заказов</div>
-      </div>
-
-      <div class="list">
-        <div class="item">📍 Адреса доставки</div>
-        <div class="item">🧳 История заказов</div>
-        <div class="item">💬 Поддержка</div>
-      </div>
-
-      <div class="bonus">
-        <h2>Бонусные баллы</h2>
-        <div class="score">500</div>
-        <div class="muted">баллов</div>
-        <div class="muted" style="margin-top:8px">С каждой покупки вы получаете 1% от суммы заказа в виде баллов</div>
-        <div class="muted" style="margin-top:8px">1 балл = 1 рубль</div>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="page-about" class="hidden about">
-      <h1>О проекте PION</h1>
-      <p>Пока тут заглушка. Потом добавишь нормальный текст про сервис, доставку и прочие человеческие радости.</p>
-
-      <div class="bigq">Что включает в себя сервисный сбор?</div>
-
-      <div class="tile"><div class="ic">🧾</div><div><div class="t">Сборка</div><div class="muted">Комплектация заказа</div></div></div>
-      <div class="tile"><div class="ic">📦</div><div><div class="t">Упаковка</div><div class="muted">Чтобы доехало живым</div></div></div>
-      <div class="tile"><div class="ic">🏷️</div><div><div class="t">Налог</div><div class="muted">Да, он всё ещё существует</div></div></div>
-    </section>
-
-  </div>
-
-  <!-- bottom nav -->
-  <nav class="bottomnav">
-    <a href="#catalog" class="tab active" id="tab-catalog">☰<span>Меню</span></a>
-    <a href="#cart" class="tab" id="tab-cart">
-      🛒<span>Корзина</span>
-      <div class="badge-count hidden" id="cartBadge">0</div>
-    </a>
-    <a href="#profile" class="tab" id="tab-profile">👤<span>Профиль</span></a>
-    <a href="#about" class="tab" id="tab-about">ℹ️<span>О проекте</span></a>
-  </nav>
-
-</div>
-
-<script>
-  // Telegram
-  const tg = window.Telegram?.WebApp;
-  if (tg) { tg.ready(); tg.expand(); }
-  document.getElementById("closeBtn").onclick = () => tg?.close();
-
-  // Profile: имя (и фото если есть)
-  const user = tg?.initDataUnsafe?.user;
-  if (user) {
-    document.getElementById("username").textContent =
-      [user.first_name, user.last_name].filter(Boolean).join(" ");
-    if (user.photo_url) {
-      document.getElementById("avatar").innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
+    // Profile data from Telegram
+    const user = tg?.initDataUnsafe?.user;
+    if (user) {
+      const full = [user.first_name, user.last_name].filter(Boolean).join(" ").trim();
+      document.getElementById("username").textContent = full || "Пользователь";
+      if (user.photo_url) {
+        document.getElementById("avatar").innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
+      } else {
+        // fallback initials
+        const ini = (user.first_name || "N").slice(0,1) + (user.last_name || "B").slice(0,1);
+        document.getElementById("avatar").textContent = ini.toUpperCase();
+      }
     }
-  }
 
-  // Data: заглушки товаров
-  const CATEGORIES = ["Все","Цветы","Сеты","Экзотика"];
-  const TAGS = ["Белые","Красные","Розовые","Ароматные","Стойкие"];
+    // Data (placeholders)
+    const CATEGORIES = ["Все","Охапки","Сеты","Зелень","Экзотика","Сезонное"];
+    const TAGS = ["Сегодня","Завтра","Стойкие","Ароматные","Не-скромные"];
 
-  const PRODUCTS = Array.from({length: 8}).map((_, i) => ({
-    id: "p" + (i + 1),
-    title: "Название товара " + (i + 1),
-    price: 1500 + i * 350,
-    badge: "Доставим завтра",
-    cat: i % 3 === 0 ? "Сеты" : (i % 3 === 1 ? "Цветы" : "Экзотика"),
-    tags: i % 2 === 0 ? ["Розовые","Стойкие"] : ["Красные","Ароматные"],
-    ph: (i + 1) // номер для заглушки в картинке
-  }));
+    const PRODUCTS = Array.from({length: 12}).map((_, i) => ({
+      id: "p" + (i + 1),
+      title: "Название товара " + (i + 1),
+      price: 1500 + i * 220,
+      cat: CATEGORIES[1 + (i % (CATEGORIES.length - 1))],
+      tags: (i % 3 === 0) ? ["Сегодня","Не-скромные"] : (i % 3 === 1) ? ["Завтра","Стойкие"] : ["Завтра","Ароматные"],
+      delivery: (i % 3 === 0) ? "Сегодня" : "Завтра",
+      ph: (i + 1)
+    }));
 
-  // Cart state (localStorage)
-  const cart = JSON.parse(localStorage.getItem("cart") || "{}");
-  const saveCart = () => localStorage.setItem("cart", JSON.stringify(cart));
+    // Cart storage
+    const CART_KEY = "nebuket_cart";
+    const cart = JSON.parse(localStorage.getItem(CART_KEY) || "{}");
+    const saveCart = () => localStorage.setItem(CART_KEY, JSON.stringify(cart));
 
-  const $ = (id) => document.getElementById(id);
+    const $ = (id) => document.getElementById(id);
 
-  // Navigation
-  const pages = {
-    catalog: $("page-catalog"),
-    cart: $("page-cart"),
-    profile: $("page-profile"),
-    about: $("page-about")
-  };
-  const tabs = {
-    catalog: $("tab-catalog"),
-    cart: $("tab-cart"),
-    profile: $("tab-profile"),
-    about: $("tab-about")
-  };
+    // Navigation
+    const pages = {
+      catalog: $("page-catalog"),
+      cart: $("page-cart"),
+      profile: $("page-profile"),
+      how: $("page-how")
+    };
+    const tabs = {
+      catalog: $("tab-catalog"),
+      cart: $("tab-cart"),
+      profile: $("tab-profile"),
+      how: $("tab-how")
+    };
 
-  function showPage(name){
-    Object.keys(pages).forEach(k => pages[k].classList.toggle("hidden", k!==name));
-    Object.keys(tabs).forEach(k => tabs[k].classList.toggle("active", k===name));
-    location.hash = name;
-  }
+    function showPage(name){
+      Object.keys(pages).forEach(k => pages[k].classList.toggle("hidden", k !== name));
+      Object.keys(tabs).forEach(k => tabs[k].classList.toggle("active", k === name));
+      location.hash = name;
 
-  // tab clicks
-  Object.keys(tabs).forEach(key => {
-    tabs[key].addEventListener("click", (e) => {
-      e.preventDefault();
-      showPage(key);
-    });
-  });
-
-  $("goCatalog").onclick = () => showPage("catalog");
-
-  // state for filters
-  const state = { cat:"Все", tag:null };
-
-  // helpers
-  function qtyOf(id){ return cart[id] || 0; }
-  function cartCount(){
-    return Object.values(cart).reduce((a, b) => a + b, 0);
-  }
-  function cartTotal(){
-    let sum = 0;
-    for (const [id, qty] of Object.entries(cart)) {
-      const p = PRODUCTS.find(x => x.id === id);
-      if (p) sum += p.price * qty;
+      // optional: adjust MainButton
+      syncMainButton();
     }
-    return sum;
-  }
 
-  function renderBadge(){
-    const n = cartCount();
-    $("cartBadge").textContent = String(n);
-    $("cartBadge").classList.toggle("hidden", n === 0);
-  }
-
-  function renderChips() {
-    $("cats").innerHTML = CATEGORIES.map(c =>
-      `<button class="chip ${state.cat===c ? "on":""}" data-cat="${c}">${c}</button>`
-    ).join("");
-
-    $("tags").innerHTML = TAGS.map(t =>
-      `<button class="chip small ${state.tag===t ? "on":""}" data-tag="${t}">${t}</button>`
-    ).join("");
-
-    $("cats").onclick = (e) => {
-      const b = e.target.closest("button"); if(!b) return;
-      state.cat = b.dataset.cat;
-      render();
-    };
-    $("tags").onclick = (e) => {
-      const b = e.target.closest("button"); if(!b) return;
-      state.tag = (state.tag === b.dataset.tag) ? null : b.dataset.tag;
-      render();
-    };
-  }
-
-  function renderGrid() {
-    const list = PRODUCTS.filter(p => {
-      const okCat = state.cat === "Все" || p.cat === state.cat;
-      const okTag = !state.tag || p.tags.includes(state.tag);
-      return okCat && okTag;
+    Object.keys(tabs).forEach(key => {
+      tabs[key].addEventListener("click", (e) => {
+        e.preventDefault();
+        showPage(key);
+      });
     });
 
-    $("grid").innerHTML = list.map(p => `
-      <div class="card">
-        <div class="imgwrap">
-          <div class="badge">${p.badge}</div>
-          <div class="imgph">${p.ph}</div>
-          <div class="carticon" data-open-cart="1" title="Открыть корзину">🛒</div>
-        </div>
-        <div class="cardbody">
-          <div class="title">${p.title}</div>
-          <div class="bottom">
-            <div class="price">${p.price.toLocaleString("ru-RU")} ₽</div>
-            <div class="qty">
-              <button data-dec="${p.id}" ${qtyOf(p.id)===0 ? "disabled":""}>–</button>
-              <span>${qtyOf(p.id)}</span>
-              <button data-inc="${p.id}">+</button>
+    $("goCatalog").onclick = () => showPage("catalog");
+
+    // Filter state
+    const state = { cat:"Все", tag:null };
+
+    function qtyOf(id){ return cart[id] || 0; }
+    function cartCount(){ return Object.values(cart).reduce((a,b) => a+b, 0); }
+    function cartTotal(){
+      let sum = 0;
+      for (const [id, qty] of Object.entries(cart)) {
+        const p = PRODUCTS.find(x => x.id === id);
+        if (p) sum += p.price * qty;
+      }
+      return sum;
+    }
+
+    function renderBadge(){
+      const n = cartCount();
+      $("cartBadge").textContent = String(n);
+      $("cartBadge").classList.toggle("hidden", n === 0);
+    }
+
+    function renderChips(){
+      $("cats").innerHTML = CATEGORIES.map(c =>
+        `<button class="chip ${state.cat===c ? "on":""}" data-cat="${c}">${c}</button>`
+      ).join("");
+
+      $("tags").innerHTML = TAGS.map(t =>
+        `<button class="chip small ${state.tag===t ? "on":""}" data-tag="${t}">${t}</button>`
+      ).join("");
+
+      $("cats").onclick = (e) => {
+        const b = e.target.closest("button"); if(!b) return;
+        state.cat = b.dataset.cat;
+        render();
+      };
+      $("tags").onclick = (e) => {
+        const b = e.target.closest("button"); if(!b) return;
+        state.tag = (state.tag === b.dataset.tag) ? null : b.dataset.tag;
+        render();
+      };
+    }
+
+    function renderGrid(){
+      const list = PRODUCTS.filter(p => {
+        const okCat = state.cat === "Все" || p.cat === state.cat;
+        const okTag = !state.tag || p.tags.includes(state.tag);
+        return okCat && okTag;
+      });
+
+      $("grid").innerHTML = list.map(p => `
+        <div class="card">
+          <div class="img">
+            <div class="tag ${p.delivery==="Сегодня" ? "red":""}">${p.delivery}</div>
+            <div class="ph">${p.ph}</div>
+            <div class="cornerSlash" aria-hidden="true"></div>
+            <button class="cartBtn" data-open-cart="1" title="Открыть корзину">🛒</button>
+          </div>
+          <div class="body">
+            <div class="title">${p.title}</div>
+            <div class="row">
+              <div class="price">${p.price.toLocaleString("ru-RU")} ₽</div>
+              <div class="qty">
+                <button data-dec="${p.id}" ${qtyOf(p.id)===0 ? "disabled":""}>–</button>
+                <span>${qtyOf(p.id)}</span>
+                <button data-inc="${p.id}">+</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    `).join("");
+      `).join("");
 
-    $("grid").onclick = (e) => {
-      const btn = e.target.closest("button");
-      const openCart = e.target.closest("[data-open-cart]");
+      $("grid").onclick = (e) => {
+        const open = e.target.closest("[data-open-cart]");
+        if (open) { showPage("cart"); return; }
 
-      if (openCart) {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+
+        const inc = btn.dataset.inc;
+        const dec = btn.dataset.dec;
+
+        if (inc) {
+          cart[inc] = (cart[inc] || 0) + 1;
+          saveCart();
+          render();
+        }
+        if (dec) {
+          cart[dec] = (cart[dec] || 0) - 1;
+          if (cart[dec] <= 0) delete cart[dec];
+          saveCart();
+          render();
+        }
+      };
+    }
+
+    function renderCart(){
+      const empty = Object.keys(cart).length === 0;
+      $("cartEmpty").classList.toggle("hidden", !empty);
+      $("cartFilled").classList.toggle("hidden", empty);
+      if (empty) return;
+
+      $("cartList").innerHTML = Object.entries(cart).map(([id, qty]) => {
+        const p = PRODUCTS.find(x => x.id === id);
+        if (!p) return "";
+        return `
+          <div class="cartItem">
+            <div class="cartLeft">
+              <div class="cartName">${p.title}</div>
+              <div class="cartMeta">${p.price.toLocaleString("ru-RU")} ₽ • ${p.cat}</div>
+            </div>
+            <div class="qty">
+              <button data-dec="${p.id}">–</button>
+              <span>${qty}</span>
+              <button data-inc="${p.id}">+</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      $("cartTotal").textContent = "итого: " + cartTotal().toLocaleString("ru-RU") + " ₽";
+
+      $("cartList").onclick = (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        const inc = btn.dataset.inc;
+        const dec = btn.dataset.dec;
+
+        if (inc) { cart[inc] = (cart[inc] || 0) + 1; saveCart(); render(); }
+        if (dec) {
+          cart[dec] = (cart[dec] || 0) - 1;
+          if (cart[dec] <= 0) delete cart[dec];
+          saveCart(); render();
+        }
+      };
+
+      $("clearCart").onclick = () => {
+        Object.keys(cart).forEach(k => delete cart[k]);
+        saveCart();
+        render();
+      };
+
+      $("checkoutBtn").onclick = () => {
+        // Пока заглушка: отправим в бота состав заказа
+        const payload = {
+          action: "checkout_preview",
+          total: cartTotal(),
+          items: Object.entries(cart).map(([id, qty]) => {
+            const p = PRODUCTS.find(x => x.id === id);
+            return { id, title: p?.title, price: p?.price, qty };
+          })
+        };
+        tg?.sendData(JSON.stringify(payload));
+        alert("Заглушка оформления.\nДанные отправлены в бота (если он слушает web_app_data).");
+      };
+    }
+
+    function syncMainButton(){
+      // Не обязаловка, но выглядит “по-взрослому”
+      if (!tg?.MainButton) return;
+
+      const has = cartCount() > 0;
+      if (!has) { tg.MainButton.hide(); return; }
+
+      const total = cartTotal().toLocaleString("ru-RU") + " ₽";
+      tg.MainButton.setText("Оформить • " + total);
+      tg.MainButton.show();
+
+      tg.MainButton.onClick(() => {
         showPage("cart");
-        return;
-      }
+      });
+    }
 
-      if (!btn) return;
-      const inc = btn.dataset.inc;
-      const dec = btn.dataset.dec;
+    function render(){
+      renderChips();
+      renderGrid();
+      renderCart();
+      renderBadge();
+      syncMainButton();
+    }
 
-      if (inc) {
-        cart[inc] = (cart[inc]||0) + 1;   // товар "улетает в корзину"
-        saveCart();
-        render();                         // обновляем счетчики/корзину/карточки
-      }
-      if (dec) {
-        cart[dec] = (cart[dec]||0) - 1;
-        if (cart[dec] <= 0) delete cart[dec];
-        saveCart();
-        render();
-      }
-    };
-  }
-
-  function renderCart() {
-    const empty = Object.keys(cart).length === 0;
-    $("cartEmpty").classList.toggle("hidden", !empty);
-    $("cartFilled").classList.toggle("hidden", empty);
-
-    if (empty) return;
-
-    const items = Object.entries(cart).map(([id, qty]) => {
-      const p = PRODUCTS.find(x => x.id === id);
-      if (!p) return "";
-      return `
-        <div class="cart-item">
-          <div class="cart-left">
-            <div class="cart-name">${p.title}</div>
-            <div class="cart-price">${p.price.toLocaleString("ru-RU")} ₽</div>
-          </div>
-
-          <div class="qty">
-            <button data-dec="${p.id}">–</button>
-            <span>${qty}</span>
-            <button data-inc="${p.id}">+</button>
-          </div>
-        </div>
-      `;
-    }).join("");
-
-    $("cartList").innerHTML = items;
-    $("cartTotal").textContent = "Итого: " + cartTotal().toLocaleString("ru-RU") + " ₽";
-
-    // обработчик +/- внутри корзины
-    $("cartList").onclick = (e) => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
-
-      const inc = btn.dataset.inc;
-      const dec = btn.dataset.dec;
-
-      if (inc) {
-        cart[inc] = (cart[inc]||0) + 1;
-        saveCart();
-        render();
-      }
-      if (dec) {
-        cart[dec] = (cart[dec]||0) - 1;
-        if (cart[dec] <= 0) delete cart[dec];
-        saveCart();
-        render();
-      }
-    };
-
-    $("clearCart").onclick = () => {
-      for (const k of Object.keys(cart)) delete cart[k];
-      saveCart();
-      render();
-    };
-  }
-
-  function render(){
-    renderChips();
-    renderGrid();
-    renderCart();
-    renderBadge();
-  }
-
-  // initial page
-  const start = (location.hash || "#catalog").replace("#","");
-  showPage(["catalog","cart","profile","about"].includes(start) ? start : "catalog");
-  render();
-</script>
+    // initial
+    const start = (location.hash || "#catalog").replace("#","");
+    showPage(["catalog","cart","profile","how"].includes(start) ? start : "catalog");
+    render();
+  </script>
 </body>
 </html>
