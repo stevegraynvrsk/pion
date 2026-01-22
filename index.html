@@ -8,9 +8,9 @@
 
   <style>
     :root{
-      --mint:#A7CEBB;         /* фон как на рефе */
-      --ink:#060A07;          /* почти чёрный */
-      --red:#DF3A2C;          /* слэш */
+      --mint:#A7CEBB;
+      --ink:#060A07;
+      --red:#DF3A2C;
       --soft:#F6F6F6;
       --line:#EAEAEA;
       --muted:#6E6E6E;
@@ -26,7 +26,6 @@
       color:var(--ink);
     }
 
-    /* Layout */
     .app{min-height:100vh; padding-bottom:78px;}
     .content{padding:14px 14px 24px;}
     .hidden{display:none !important;}
@@ -35,9 +34,8 @@
     .topbar{
       position:sticky; top:0; z-index:50;
       background:var(--mint);
-      padding:14px 12px 10px;
+      padding:14px 12px 12px;
       border-bottom:1px solid rgba(0,0,0,.06);
-      overflow:hidden;
     }
     .topbar-grid{
       display:grid;
@@ -54,37 +52,12 @@
       border-radius:12px;
     }
     .ghost:active{background:rgba(255,255,255,.25)}
-    .brandwrap{ text-align:center; line-height:1.05; }
+    .brandwrap{ text-align:center; }
     .brand{
       font-weight:900;
       letter-spacing:-.6px;
-      font-size:22px;
-      text-transform:lowercase;
-    }
-    .sub{
-      margin-top:4px;
-      font-size:12px;
-      color:rgba(0,0,0,.55);
-      font-weight:700;
-    }
-
-    /* Signature slash */
-    .slash{
-      position:absolute;
-      left:-20%;
-      top:44px;
-      width:140%;
-      height:12px;
-      background:var(--red);
-      transform:rotate(-18deg);
-      transform-origin:center;
-      opacity:.95;
-      filter:saturate(1.05);
-      animation:slashIn .55s ease-out both;
-    }
-    @keyframes slashIn{
-      from{ transform:translateY(-10px) rotate(-18deg); opacity:0; }
-      to{ transform:translateY(0) rotate(-18deg); opacity:.95; }
+      font-size:20px;
+      text-transform:none;
     }
 
     /* Bottom nav */
@@ -121,7 +94,6 @@
       border-radius:999px;
       transform:rotate(-10deg);
     }
-
     .badge{
       position:absolute;
       top:2px;
@@ -141,50 +113,50 @@
     }
     .badge.hidden{display:none}
 
-    /* Hero */
-    .hero{
-      margin:10px 0 14px;
-      border:1px solid var(--line);
-      border-radius:var(--radius);
+    /* Catalog header */
+    .catalogHead{
+      margin:10px 0 10px;
       padding:14px;
+      border-radius:var(--radius);
+      border:1px solid var(--line);
       background:#fff;
-      position:relative;
-      overflow:hidden;
     }
-    .hero h1{
+    .catalogHead .big{
       margin:0;
       font-size:34px;
-      letter-spacing:-1.2px;
       font-weight:950;
-      text-transform:lowercase;
+      letter-spacing:-1.2px;
+      text-transform:none;
     }
-    .hero p{
-      margin:8px 0 0;
-      color:var(--muted);
-      font-weight:700;
-      line-height:1.25;
+    .strikeLine{
+      margin-top:10px;
+      display:inline-block;
+      position:relative;
+      font-size:18px;
+      font-weight:500;
+      letter-spacing:-.4px;
+      text-transform:none;
+      padding:4px 2px;
     }
-    .hero .stamp{
-      margin-top:12px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    .pill{
-      border:1px solid rgba(0,0,0,.14);
-      border-radius:999px;
-      padding:8px 10px;
-      font-size:12px;
-      font-weight:900;
-      background:#fff;
-      color:var(--ink);
-    }
-    .pill.red{
-      border-color:var(--red);
-      color:var(--red);
+    /* “кистевой” слэш поверх слова */
+    .strikeLine::after{
+      content:"";
+      position:absolute;
+      left:-8%;
+      top:52%;
+      width:116%;
+      height:18px;
+      transform:rotate(-14deg);
+      opacity:.95;
+      pointer-events:none;
+
+      /* SVG мазок кисти (data URI) */
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='80' viewBox='0 0 600 80'%3E%3Cpath d='M20 50 C80 15 140 70 210 40 C290 5 350 75 430 36 C500 2 540 55 580 28' fill='none' stroke='%23DF3A2C' stroke-width='18' stroke-linecap='round' stroke-linejoin='round' opacity='0.95'/%3E%3Cpath d='M25 54 C90 24 145 68 215 44 C290 18 355 68 435 40 C505 16 545 56 575 34' fill='none' stroke='%23DF3A2C' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' opacity='0.55'/%3E%3C/svg%3E") no-repeat center;
+      background-size:100% 100%;
+      filter:saturate(1.05);
     }
 
-    /* Chips */
+    /* Chips (filters only) */
     .chips{
       display:flex;
       gap:8px;
@@ -198,26 +170,17 @@
       border:1px solid rgba(0,0,0,.16);
       background:#fff;
       color:var(--ink);
-      font-weight:900;
+      font-weight:700;
       font-size:13px;
       user-select:none;
     }
     .chip.on{
       border-color:var(--ink);
       box-shadow: inset 0 0 0 1px var(--ink);
-    }
-    .chip.small{
       font-weight:800;
-      color:var(--muted);
-      border-color:rgba(0,0,0,.10);
-    }
-    .chip.small.on{
-      color:var(--ink);
-      border-color:var(--ink);
-      box-shadow: inset 0 0 0 1px var(--ink);
     }
 
-    /* Grid cards */
+    /* Grid */
     .grid{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -243,33 +206,20 @@
       justify-content:center;
       font-size:38px;
       font-weight:950;
-      color:rgba(0,0,0,.75);
+      color:rgba(0,0,0,.70);
       letter-spacing:-2px;
       user-select:none;
     }
-    .img .tag{
+    .img .cornerBrush{
       position:absolute;
-      top:10px; left:10px;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#fff;
-      border:1px solid rgba(0,0,0,.10);
-      font-size:12px;
-      font-weight:950;
-    }
-    .img .tag.red{
-      border-color:var(--red);
-      color:var(--red);
-    }
-    .img .cornerSlash{
-      position:absolute;
-      right:-22px;
+      right:-26px;
       bottom:18px;
-      width:90px;
-      height:10px;
-      background:var(--red);
-      transform:rotate(-25deg);
-      opacity:.9;
+      width:100px;
+      height:16px;
+      transform:rotate(-22deg);
+      opacity:.92;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='60' viewBox='0 0 240 60'%3E%3Cpath d='M10 35 C40 10 70 52 100 30 C140 2 170 52 210 18' fill='none' stroke='%23DF3A2C' stroke-width='14' stroke-linecap='round' stroke-linejoin='round' opacity='0.9'/%3E%3C/svg%3E") no-repeat center;
+      background-size:100% 100%;
     }
     .img .cartBtn{
       position:absolute;
@@ -289,14 +239,14 @@
     }
     .img .cartBtn:active{transform:scale(.96)}
 
-    .body{
-      padding:10px 10px 12px;
-    }
+    .body{padding:10px 10px 12px}
+    /* тоньше и легче */
     .title{
-      font-weight:950;
+      font-weight:400;
       font-size:14px;
       letter-spacing:-.2px;
       margin:0 0 8px;
+      color:var(--ink);
     }
     .row{
       display:flex;
@@ -305,14 +255,16 @@
       gap:10px;
     }
     .price{
-      font-weight:950;
-      letter-spacing:-.3px;
+      font-weight:400;
+      font-size:14px;
+      letter-spacing:-.2px;
+      color:var(--ink);
     }
     .qty{
       display:flex;
       align-items:center;
       gap:10px;
-      font-weight:950;
+      font-weight:800;
     }
     .qty button{
       width:28px;height:28px;
@@ -328,10 +280,10 @@
     /* Cart */
     .h2{
       font-size:22px;
-      font-weight:950;
+      font-weight:900;
       letter-spacing:-.6px;
       margin:6px 0 12px;
-      text-transform:lowercase;
+      text-transform:none;
     }
 
     .empty{
@@ -348,19 +300,14 @@
       padding:22px;
       text-align:center;
     }
-    .panel .x{
-      font-size:28px;
-      font-weight:950;
-      margin-bottom:8px;
-    }
     .panel .t{
       font-size:20px;
-      font-weight:950;
+      font-weight:900;
       margin-bottom:8px;
     }
     .panel .p{
       color:var(--muted);
-      font-weight:700;
+      font-weight:600;
       margin-bottom:14px;
       line-height:1.25;
     }
@@ -370,7 +317,7 @@
       border-radius:999px;
       border:1px solid rgba(0,0,0,.14);
       background:#fff;
-      font-weight:950;
+      font-weight:900;
       cursor:pointer;
     }
     .btn.red{
@@ -402,7 +349,7 @@
       min-width:0;
     }
     .cartName{
-      font-weight:950;
+      font-weight:700;
       letter-spacing:-.2px;
       overflow:hidden;
       text-overflow:ellipsis;
@@ -411,7 +358,7 @@
     }
     .cartMeta{
       color:var(--muted);
-      font-weight:700;
+      font-weight:600;
       font-size:13px;
     }
     .bar{
@@ -424,7 +371,7 @@
       gap:10px;
     }
     .total{
-      font-weight:950;
+      font-weight:900;
       font-size:16px;
     }
     .clear{
@@ -432,7 +379,7 @@
       background:#fff;
       border-radius:999px;
       padding:10px 12px;
-      font-weight:950;
+      font-weight:900;
       cursor:pointer;
     }
 
@@ -450,12 +397,12 @@
       border:1px solid rgba(0,0,0,.10);
       background:linear-gradient(135deg, #fafafa, #e6e6e6);
       display:flex;align-items:center;justify-content:center;
-      font-weight:950;
+      font-weight:900;
     }
     .avatar img{width:100%;height:100%;object-fit:cover}
     .name{
       font-size:22px;
-      font-weight:950;
+      font-weight:900;
       letter-spacing:-.5px;
       line-height:1.05;
     }
@@ -467,8 +414,16 @@
       margin-bottom:12px;
     }
     .box .bh{
-      font-weight:950;
+      font-weight:900;
       margin-bottom:6px;
+    }
+    .linkBtn{
+      border:1px solid rgba(0,0,0,.14);
+      background:#fff;
+      border-radius:999px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
     }
     .list{
       display:flex;
@@ -477,47 +432,155 @@
       margin:12px 0 18px;
     }
     .item{
+      font-weight:800;
+      font-size:16px;
+    }
+    .subitem{
+      margin-top:6px;
+      color:var(--muted);
+      font-weight:600;
+      font-size:13px;
+    }
+
+    /* Simple modal */
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.35);
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      z-index:200;
+      padding:12px;
+    }
+    .sheet{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:22px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+    .sheetHead{
+      padding:14px 14px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background:var(--mint);
+      position:relative;
+    }
+    .sheetTitle{
       font-weight:900;
       font-size:16px;
-    }
-
-    /* How */
-    .how h3{
-      margin:12px 0 8px;
-      font-size:16px;
-      font-weight:950;
       letter-spacing:-.2px;
     }
-    .how p{
-      margin:0 0 10px;
-      color:var(--muted);
+    .xbtn{
+      border:0;
+      background:rgba(255,255,255,.35);
+      width:34px;height:34px;
+      border-radius:12px;
+      font-size:18px;
+      cursor:pointer;
+    }
+    .sheetBody{
+      padding:14px;
+    }
+    .field{
+      margin-bottom:12px;
+    }
+    label{
+      display:block;
+      font-weight:800;
+      font-size:13px;
+      margin-bottom:6px;
+    }
+    input, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.14);
+      font-size:16px;
+      outline:none;
+    }
+    input:focus{border-color:rgba(0,0,0,.35)}
+    .err{
+      margin-top:6px;
+      color:var(--red);
       font-weight:700;
+      font-size:12px;
+      display:none;
+    }
+    .row2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .radioRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .radio{
+      border:1px solid rgba(0,0,0,.14);
+      border-radius:999px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      background:#fff;
+      user-select:none;
+    }
+    .radio.on{
+      border-color:var(--ink);
+      box-shadow: inset 0 0 0 1px var(--ink);
+    }
+    .checkRow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:8px;
+      font-weight:800;
+      color:var(--muted);
+    }
+    .checkRow input{width:auto}
+    .sheetFoot{
+      padding:12px 14px 16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:center;
+      background:#fff;
+    }
+    .note{
+      margin-top:8px;
+      color:var(--muted);
+      font-weight:600;
+      font-size:12px;
       line-height:1.25;
     }
-    .tile{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      border:1px solid var(--line);
-      background:var(--soft);
-      border-radius:18px;
-      padding:12px;
-      margin-bottom:10px;
-    }
-    .ic{
-      width:42px;height:42px;border-radius:14px;
-      background:#fff;
-      border:1px solid rgba(0,0,0,.10);
-      display:flex;align-items:center;justify-content:center;
-      font-size:20px;
-    }
-    .tile .tt{font-weight:950}
-    .tile .mm{color:var(--muted); font-weight:700; font-size:13px; margin-top:2px}
 
-    /* Small screens niceties */
+    /* Order details list in modal */
+    .miniList{
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      margin-top:10px;
+    }
+    .miniRow{
+      padding:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      border-top:1px solid var(--line);
+      background:#fff;
+    }
+    .miniRow:first-child{border-top:0}
+    .miniRow b{font-weight:900}
+    .miniRow span{color:var(--muted); font-weight:600}
+
     @media (max-width:360px){
       .grid{grid-template-columns:1fr}
       .cartName{max-width:160px}
+      .row2{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -525,15 +588,12 @@
 <body>
   <div class="app">
     <div class="topbar">
-      <div class="slash" aria-hidden="true"></div>
-
       <div class="topbar-grid">
         <button class="ghost" id="closeBtn">Закрыть</button>
         <div class="brandwrap">
-          <div class="brand">ne buket</div>
-          <div class="sub">не клише. не пафос.</div>
+          <div class="brand">Ne buket</div>
         </div>
-        <button class="ghost" id="dotsBtn" aria-label="menu">⋯</button>
+        <button class="ghost" aria-label="menu">⋯</button>
       </div>
     </div>
 
@@ -541,32 +601,24 @@
 
       <!-- CATALOG -->
       <section id="page-catalog">
-        <div class="hero">
-          <h1>ne buket</h1>
-          <p>цветы как стиль. без лишней лирики.</p>
-          <div class="stamp">
-            <div class="pill red">не банально</div>
-            <div class="pill">быстро</div>
-            <div class="pill">честно</div>
-          </div>
+        <div class="catalogHead">
+          <h1 class="big">Ne buket</h1>
+          <div class="strikeLine">Ne buket</div>
         </div>
 
         <div class="chips" id="cats"></div>
-        <div class="chips" id="tags"></div>
-
         <div class="grid" id="grid"></div>
       </section>
 
       <!-- CART -->
       <section id="page-cart" class="hidden">
-        <div class="h2">корзина</div>
+        <div class="h2">Корзина</div>
 
         <div id="cartEmpty" class="empty">
           <div class="panel">
-            <div class="x">ne-что купить?</div>
-            <div class="t">корзина пустая</div>
-            <div class="p">нажми “+” у товара. он улетит сюда мгновенно.</div>
-            <button class="btn red" id="goCatalog">в каталог</button>
+            <div class="t">Корзина пустая</div>
+            <div class="p">Нажми “+” у товара. Он появится здесь.</div>
+            <button class="btn red" id="goCatalog">В каталог</button>
           </div>
         </div>
 
@@ -574,15 +626,12 @@
           <div class="cartList" id="cartList"></div>
 
           <div class="bar">
-            <div class="total" id="cartTotal">итого: 0 ₽</div>
-            <button class="clear" id="clearCart">очистить</button>
+            <div class="total" id="cartTotal">Итого: 0 ₽</div>
+            <button class="clear" id="clearCart">Очистить</button>
           </div>
 
           <div style="margin-top:12px; display:flex; justify-content:center;">
-            <button class="btn red" id="checkoutBtn">оформить</button>
-          </div>
-          <div style="margin-top:10px; text-align:center; color:var(--muted); font-weight:700; font-size:12px;">
-            (пока заглушка. потом подключим оплату/оформление.)
+            <button class="btn red" id="checkoutBtn">Оформить</button>
           </div>
         </div>
       </section>
@@ -593,79 +642,144 @@
           <div class="avatar" id="avatar">NB</div>
           <div>
             <div class="name" id="username">Пользователь</div>
-            <div style="color:var(--muted); font-weight:800; margin-top:4px;">аккаунт из Telegram</div>
           </div>
         </div>
 
-        <div class="box">
-          <div class="bh">активный заказ</div>
-          <div style="color:var(--muted); font-weight:700;">пока нет активных заказов</div>
+        <div class="box" id="activeBox">
+          <div class="bh">Активный заказ</div>
+          <div id="activeText" style="color:var(--muted); font-weight:600;">Пока нет активных заказов</div>
+          <div style="margin-top:10px; display:none;" id="activeActions">
+            <button class="linkBtn" id="openActive">Открыть</button>
+          </div>
         </div>
 
         <div class="list">
-          <div class="item">📍 адреса доставки</div>
-          <div class="item">🧾 история заказов</div>
-          <div class="item">💬 поддержка</div>
-        </div>
+          <div class="item">
+            📍 Адрес доставки
+            <div class="subitem" id="lastAddress">Нет данных</div>
+          </div>
 
-        <div class="box">
-          <div class="bh">бонусы</div>
-          <div style="font-size:34px; font-weight:950;">500</div>
-          <div style="color:var(--muted); font-weight:700;">баллов (заглушка)</div>
+          <div class="item" id="historyBtn">
+            🧾 История заказов
+            <div class="subitem">Пока заглушка (будут доработки)</div>
+          </div>
         </div>
       </section>
 
-      <!-- HOW IT WORKS -->
-      <section id="page-how" class="hidden how">
-        <div class="h2">как это работает</div>
-
-        <div class="tile">
-          <div class="ic">🕒</div>
-          <div>
-            <div class="tt">быстро</div>
-            <div class="mm">сегодня/завтра. без созвонов и “ой, сейчас уточню”.</div>
+      <!-- HOW (оставил, вдруг пригодится) -->
+      <section id="page-how" class="hidden">
+        <div class="h2">Как это работает</div>
+        <div class="panel" style="text-align:left">
+          <div class="p" style="margin:0">
+            Здесь позже можно разместить правила: сроки, замены, условия доставки/самовывоза.
           </div>
         </div>
-
-        <div class="tile">
-          <div class="ic">💸</div>
-          <div>
-            <div class="tt">честно</div>
-            <div class="mm">цена понятная. без театра и “уникальных композиций”.</div>
-          </div>
-        </div>
-
-        <div class="tile">
-          <div class="ic">🌿</div>
-          <div>
-            <div class="tt">живой товар</div>
-            <div class="mm">цветы живые. иногда возможны замены по наличию.</div>
-          </div>
-        </div>
-
-        <h3>сервисный сбор</h3>
-        <p>если понадобится, объясняем просто: сборка, упаковка, логистика. без магии.</p>
       </section>
 
     </div>
 
     <nav class="bottomnav">
-      <a href="#catalog" class="tab active" id="tab-catalog">☰<span>каталог</span></a>
+      <a href="#catalog" class="tab active" id="tab-catalog">☰<span>Каталог</span></a>
       <a href="#cart" class="tab" id="tab-cart">
-        🛒<span>корзина</span>
+        🛒<span>Корзина</span>
         <div class="badge hidden" id="cartBadge">0</div>
       </a>
-      <a href="#profile" class="tab" id="tab-profile">👤<span>профиль</span></a>
-      <a href="#how" class="tab" id="tab-how">✳️<span>как</span></a>
+      <a href="#profile" class="tab" id="tab-profile">👤<span>Профиль</span></a>
+      <a href="#how" class="tab" id="tab-how">✳️<span>Как</span></a>
     </nav>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal hidden" id="checkoutModal">
+    <div class="sheet">
+      <div class="sheetHead">
+        <div class="sheetTitle" id="checkoutTitle">Оформление</div>
+        <button class="xbtn" id="closeCheckout">✕</button>
+      </div>
+
+      <div class="sheetBody" id="checkoutFormView">
+        <div class="field">
+          <label for="cName">Имя</label>
+          <input id="cName" placeholder="Иван" />
+          <div class="err" id="eName"></div>
+        </div>
+
+        <div class="field">
+          <label for="cPhone">Телефон</label>
+          <input id="cPhone" inputmode="numeric" placeholder="+7 (___) ___-__-__" />
+          <div class="err" id="ePhone"></div>
+          <div class="note">Вводи только цифры, формат подставится сам.</div>
+        </div>
+
+        <div class="field">
+          <label>Способ получения</label>
+          <div class="radioRow">
+            <div class="radio on" id="optDelivery" data-mode="delivery">Доставка</div>
+            <div class="radio" id="optPickup" data-mode="pickup">Самовывоз</div>
+          </div>
+          <div class="err" id="eMode"></div>
+        </div>
+
+        <div id="addrBlock">
+          <div class="field">
+            <label for="cStreet">Улица</label>
+            <input id="cStreet" placeholder="Ленина" />
+            <div class="err" id="eStreet"></div>
+          </div>
+
+          <div class="row2">
+            <div class="field">
+              <label for="cHouse">Дом</label>
+              <input id="cHouse" placeholder="10" />
+              <div class="err" id="eHouse"></div>
+            </div>
+
+            <div class="field" id="aptField">
+              <label for="cApt">Квартира</label>
+              <input id="cApt" placeholder="25" />
+              <div class="err" id="eApt"></div>
+              <div class="checkRow">
+                <input type="checkbox" id="noApt" />
+                <label for="noApt" style="margin:0; font-weight:800; font-size:13px; cursor:pointer;">Нет квартиры</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheetFoot">
+          <button class="btn red" id="sendToWork">Отправить в работу</button>
+        </div>
+      </div>
+
+      <div class="sheetBody hidden" id="checkoutSuccessView">
+        <div style="font-weight:900; font-size:18px; margin-bottom:8px;">
+          Ваш заказ уже в работе
+        </div>
+        <div style="color:var(--muted); font-weight:600; line-height:1.3;">
+          Мы спешим позвонить Вам для подтверждения и оплаты заказа.
+        </div>
+        <div class="sheetFoot" style="border-top:0; padding-top:16px;">
+          <button class="btn red" id="okSuccess">Ок</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER DETAILS MODAL -->
+  <div class="modal hidden" id="orderModal">
+    <div class="sheet">
+      <div class="sheetHead">
+        <div class="sheetTitle" id="orderTitle">Заказ</div>
+        <button class="xbtn" id="closeOrder">✕</button>
+      </div>
+      <div class="sheetBody" id="orderBody"></div>
+    </div>
   </div>
 
   <script>
     // Telegram init
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
-
-    // Close
     document.getElementById("closeBtn").onclick = () => tg?.close();
 
     // Profile data from Telegram
@@ -676,30 +790,34 @@
       if (user.photo_url) {
         document.getElementById("avatar").innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
       } else {
-        // fallback initials
         const ini = (user.first_name || "N").slice(0,1) + (user.last_name || "B").slice(0,1);
         document.getElementById("avatar").textContent = ini.toUpperCase();
       }
     }
 
-    // Data (placeholders)
+    // Data
     const CATEGORIES = ["Все","Охапки","Сеты","Зелень","Экзотика","Сезонное"];
-    const TAGS = ["Сегодня","Завтра","Стойкие","Ароматные","Не-скромные"];
 
     const PRODUCTS = Array.from({length: 12}).map((_, i) => ({
       id: "p" + (i + 1),
       title: "Название товара " + (i + 1),
       price: 1500 + i * 220,
       cat: CATEGORIES[1 + (i % (CATEGORIES.length - 1))],
-      tags: (i % 3 === 0) ? ["Сегодня","Не-скромные"] : (i % 3 === 1) ? ["Завтра","Стойкие"] : ["Завтра","Ароматные"],
-      delivery: (i % 3 === 0) ? "Сегодня" : "Завтра",
       ph: (i + 1)
     }));
 
-    // Cart storage
+    // Storage keys
     const CART_KEY = "nebuket_cart";
+    const ORDERS_KEY = "nebuket_orders";
+    const ACTIVE_KEY = "nebuket_active_order_id";
+
     const cart = JSON.parse(localStorage.getItem(CART_KEY) || "{}");
+    const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+    let activeOrderId = localStorage.getItem(ACTIVE_KEY) || "";
+
     const saveCart = () => localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    const saveOrders = () => localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    const saveActive = () => localStorage.setItem(ACTIVE_KEY, activeOrderId);
 
     const $ = (id) => document.getElementById(id);
 
@@ -716,27 +834,21 @@
       profile: $("tab-profile"),
       how: $("tab-how")
     };
-
     function showPage(name){
       Object.keys(pages).forEach(k => pages[k].classList.toggle("hidden", k !== name));
       Object.keys(tabs).forEach(k => tabs[k].classList.toggle("active", k === name));
       location.hash = name;
-
-      // optional: adjust MainButton
-      syncMainButton();
     }
-
     Object.keys(tabs).forEach(key => {
       tabs[key].addEventListener("click", (e) => {
         e.preventDefault();
         showPage(key);
       });
     });
-
     $("goCatalog").onclick = () => showPage("catalog");
 
-    // Filter state
-    const state = { cat:"Все", tag:null };
+    // Filters
+    const state = { cat:"Все" };
 
     function qtyOf(id){ return cart[id] || 0; }
     function cartCount(){ return Object.values(cart).reduce((a,b) => a+b, 0); }
@@ -760,35 +872,21 @@
         `<button class="chip ${state.cat===c ? "on":""}" data-cat="${c}">${c}</button>`
       ).join("");
 
-      $("tags").innerHTML = TAGS.map(t =>
-        `<button class="chip small ${state.tag===t ? "on":""}" data-tag="${t}">${t}</button>`
-      ).join("");
-
       $("cats").onclick = (e) => {
         const b = e.target.closest("button"); if(!b) return;
         state.cat = b.dataset.cat;
         render();
       };
-      $("tags").onclick = (e) => {
-        const b = e.target.closest("button"); if(!b) return;
-        state.tag = (state.tag === b.dataset.tag) ? null : b.dataset.tag;
-        render();
-      };
     }
 
     function renderGrid(){
-      const list = PRODUCTS.filter(p => {
-        const okCat = state.cat === "Все" || p.cat === state.cat;
-        const okTag = !state.tag || p.tags.includes(state.tag);
-        return okCat && okTag;
-      });
+      const list = PRODUCTS.filter(p => state.cat === "Все" || p.cat === state.cat);
 
       $("grid").innerHTML = list.map(p => `
         <div class="card">
           <div class="img">
-            <div class="tag ${p.delivery==="Сегодня" ? "red":""}">${p.delivery}</div>
             <div class="ph">${p.ph}</div>
-            <div class="cornerSlash" aria-hidden="true"></div>
+            <div class="cornerBrush" aria-hidden="true"></div>
             <button class="cartBtn" data-open-cart="1" title="Открыть корзину">🛒</button>
           </div>
           <div class="body">
@@ -853,7 +951,7 @@
         `;
       }).join("");
 
-      $("cartTotal").textContent = "итого: " + cartTotal().toLocaleString("ru-RU") + " ₽";
+      $("cartTotal").textContent = "Итого: " + cartTotal().toLocaleString("ru-RU") + " ₽";
 
       $("cartList").onclick = (e) => {
         const btn = e.target.closest("button");
@@ -874,47 +972,262 @@
         saveCart();
         render();
       };
+    }
 
-      $("checkoutBtn").onclick = () => {
-        // Пока заглушка: отправим в бота состав заказа
-        const payload = {
-          action: "checkout_preview",
-          total: cartTotal(),
-          items: Object.entries(cart).map(([id, qty]) => {
-            const p = PRODUCTS.find(x => x.id === id);
-            return { id, title: p?.title, price: p?.price, qty };
-          })
-        };
-        tg?.sendData(JSON.stringify(payload));
-        alert("Заглушка оформления.\nДанные отправлены в бота (если он слушает web_app_data).");
+    // ===== Checkout modal + validation =====
+    const checkoutModal = $("checkoutModal");
+    const checkoutFormView = $("checkoutFormView");
+    const checkoutSuccessView = $("checkoutSuccessView");
+
+    const cName = $("cName");
+    const cPhone = $("cPhone");
+    const optDelivery = $("optDelivery");
+    const optPickup = $("optPickup");
+    const addrBlock = $("addrBlock");
+    const cStreet = $("cStreet");
+    const cHouse = $("cHouse");
+    const cApt = $("cApt");
+    const noApt = $("noApt");
+
+    let mode = "delivery"; // default
+
+    function openModal(el){ el.classList.remove("hidden"); }
+    function closeModal(el){ el.classList.add("hidden"); }
+
+    function clearErrors(){
+      ["eName","ePhone","eMode","eStreet","eHouse","eApt"].forEach(id => {
+        const e = $(id);
+        e.style.display = "none";
+        e.textContent = "";
+      });
+    }
+    function setError(id, msg){
+      const e = $(id);
+      e.textContent = msg;
+      e.style.display = "block";
+    }
+
+    function formatPhone(raw){
+      // keep digits only
+      let d = (raw || "").replace(/\D/g, "");
+      // allow user to type starting with 7/8/9 etc, we normalize to +7 + 10 digits
+      if (d.startsWith("8")) d = "7" + d.slice(1);
+      if (d.startsWith("9")) d = "7" + d;
+      if (!d.startsWith("7")) d = "7" + d;
+      d = d.slice(0, 11); // 7 + 10 digits
+
+      const a = d.slice(1, 4);
+      const b = d.slice(4, 7);
+      const c = d.slice(7, 9);
+      const e = d.slice(9, 11);
+
+      let out = "+7";
+      if (a.length) out += " (" + a;
+      if (a.length === 3) out += ")";
+      if (b.length) out += " " + b;
+      if (c.length) out += "-" + c;
+      if (e.length) out += "-" + e;
+
+      return { formatted: out, digits: d };
+    }
+
+    cPhone.addEventListener("input", () => {
+      const f = formatPhone(cPhone.value);
+      cPhone.value = f.formatted;
+    });
+
+    function setMode(m){
+      mode = m;
+      optDelivery.classList.toggle("on", m === "delivery");
+      optPickup.classList.toggle("on", m === "pickup");
+      addrBlock.classList.toggle("hidden", m !== "delivery");
+    }
+    optDelivery.onclick = () => setMode("delivery");
+    optPickup.onclick = () => setMode("pickup");
+
+    noApt.addEventListener("change", () => {
+      if (noApt.checked) {
+        cApt.value = "";
+        cApt.disabled = true;
+      } else {
+        cApt.disabled = false;
+      }
+    });
+
+    $("checkoutBtn").onclick = () => {
+      clearErrors();
+      checkoutFormView.classList.remove("hidden");
+      checkoutSuccessView.classList.add("hidden");
+      setMode(mode || "delivery");
+      openModal(checkoutModal);
+    };
+
+    $("closeCheckout").onclick = () => closeModal(checkoutModal);
+    $("okSuccess").onclick = () => {
+      closeModal(checkoutModal);
+      showPage("profile");
+    };
+
+    function genOrderId(){
+      return String(Date.now()).slice(-6); // простой, но достаточно
+    }
+
+    function validateCheckout(){
+      clearErrors();
+
+      const name = (cName.value || "").trim();
+      const phoneInfo = formatPhone(cPhone.value);
+      const phoneDigits = phoneInfo.digits; // 11 digits, starts with 7
+
+      if (!name) setError("eName", "Укажите имя");
+      if (phoneDigits.length !== 11) setError("ePhone", "Укажите телефон полностью");
+
+      if (mode !== "delivery" && mode !== "pickup") setError("eMode", "Выберите способ получения");
+
+      if (mode === "delivery") {
+        const street = (cStreet.value || "").trim();
+        const house = (cHouse.value || "").trim();
+        const apt = (cApt.value || "").trim();
+
+        if (!street) setError("eStreet", "Укажите улицу");
+        if (!house) setError("eHouse", "Укажите дом");
+        if (!noApt.checked && !apt) setError("eApt", "Укажите квартиру или отметьте “Нет квартиры”");
+      }
+
+      // any errors visible?
+      const any = ["eName","ePhone","eMode","eStreet","eHouse","eApt"].some(id => $(id).style.display === "block");
+      if (any) return null;
+
+      // Build address
+      let address = "Самовывоз";
+      if (mode === "delivery") {
+        const street = (cStreet.value || "").trim();
+        const house = (cHouse.value || "").trim();
+        const apt = noApt.checked ? "" : (cApt.value || "").trim();
+        address = `${street}, дом ${house}` + (apt ? `, кв ${apt}` : "");
+      }
+
+      return {
+        customer_name: name,
+        customer_phone: phoneInfo.formatted,
+        mode,
+        address
       };
     }
 
-    function syncMainButton(){
-      // Не обязаловка, но выглядит “по-взрослому”
-      if (!tg?.MainButton) return;
-
-      const has = cartCount() > 0;
-      if (!has) { tg.MainButton.hide(); return; }
-
-      const total = cartTotal().toLocaleString("ru-RU") + " ₽";
-      tg.MainButton.setText("Оформить • " + total);
-      tg.MainButton.show();
-
-      tg.MainButton.onClick(() => {
-        showPage("cart");
+    function buildOrderItems(){
+      return Object.entries(cart).map(([id, qty]) => {
+        const p = PRODUCTS.find(x => x.id === id);
+        return { id, title: p?.title || id, price: p?.price || 0, qty };
       });
     }
 
+    $("sendToWork").onclick = () => {
+      const data = validateCheckout();
+      if (!data) return;
+
+      const items = buildOrderItems();
+      const total = cartTotal();
+      const order = {
+        id: genOrderId(),
+        created_at: new Date().toISOString(),
+        status: "in_work",
+        items,
+        total,
+        ...data
+      };
+
+      orders.unshift(order);
+      saveOrders();
+
+      activeOrderId = order.id;
+      saveActive();
+
+      // очистим корзину
+      Object.keys(cart).forEach(k => delete cart[k]);
+      saveCart();
+
+      // отправим боту (если он слушает web_app_data)
+      tg?.sendData(JSON.stringify({ action:"order_in_work", order }));
+
+      // success screen
+      checkoutFormView.classList.add("hidden");
+      checkoutSuccessView.classList.remove("hidden");
+
+      render();
+    };
+
+    // ===== Order details modal =====
+    const orderModal = $("orderModal");
+    $("closeOrder").onclick = () => closeModal(orderModal);
+
+    function openOrderDetails(order){
+      $("orderTitle").textContent = `Заказ №${order.id}`;
+      const itemsHtml = order.items.map(it => `
+        <div class="miniRow">
+          <div><b>${it.title}</b><br><span>${it.qty} × ${it.price.toLocaleString("ru-RU")} ₽</span></div>
+          <div><b>${(it.qty*it.price).toLocaleString("ru-RU")} ₽</b></div>
+        </div>
+      `).join("");
+
+      $("orderBody").innerHTML = `
+        <div class="miniList">
+          ${itemsHtml}
+        </div>
+
+        <div class="miniList" style="margin-top:12px">
+          <div class="miniRow"><div><b>Получение</b><br><span>${order.mode === "delivery" ? "Доставка" : "Самовывоз"}</span></div></div>
+          <div class="miniRow"><div><b>Адрес</b><br><span>${order.address}</span></div></div>
+          <div class="miniRow"><div><b>Имя</b><br><span>${order.customer_name}</span></div></div>
+          <div class="miniRow"><div><b>Телефон</b><br><span>${order.customer_phone}</span></div></div>
+          <div class="miniRow"><div><b>Статус</b><br><span>В работе</span></div><div><b>${order.total.toLocaleString("ru-RU")} ₽</b></div></div>
+        </div>
+      `;
+      openModal(orderModal);
+    }
+
+    // Profile rendering
+    function renderProfile(){
+      // last address from last order
+      const last = orders[0];
+      $("lastAddress").textContent = last ? last.address : "Нет данных";
+
+      const active = orders.find(o => o.id === activeOrderId && o.status === "in_work");
+      const activeText = $("activeText");
+      const activeActions = $("activeActions");
+
+      if (!active) {
+        activeText.textContent = "Пока нет активных заказов";
+        activeActions.style.display = "none";
+        return;
+      }
+
+      const count = active.items.reduce((s, it) => s + it.qty, 0);
+      activeText.textContent = `№${active.id} • ${count} шт • ${active.total.toLocaleString("ru-RU")} ₽`;
+      activeActions.style.display = "block";
+
+      $("openActive").onclick = () => openOrderDetails(active);
+    }
+
+    // History button (placeholder: покажем последний заказ)
+    $("historyBtn").onclick = () => {
+      if (!orders.length) {
+        alert("История заказов пока пустая.");
+        return;
+      }
+      openOrderDetails(orders[0]);
+    };
+
+    // Render all
     function render(){
       renderChips();
       renderGrid();
       renderCart();
       renderBadge();
-      syncMainButton();
+      renderProfile();
     }
 
-    // initial
+    // Initial page
     const start = (location.hash || "#catalog").replace("#","");
     showPage(["catalog","cart","profile","how"].includes(start) ? start : "catalog");
     render();
