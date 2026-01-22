@@ -24,11 +24,12 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background:#fff;
       color:var(--ink);
+      -webkit-text-size-adjust: 100%;
     }
+    .hidden{display:none !important;}
 
     .app{min-height:100vh; padding-bottom:78px;}
     .content{padding:14px 14px 24px;}
-    .hidden{display:none !important;}
 
     /* Topbar */
     .topbar{
@@ -60,14 +61,14 @@
       text-transform:none;
     }
 
-    /* Bottom nav */
+    /* Bottom nav (modern icons) */
     .bottomnav{
       position:fixed; left:0; right:0; bottom:0; z-index:60;
       background:#fff;
       border-top:1px solid var(--line);
       display:flex;
       justify-content:space-around;
-      padding:10px 8px 12px;
+      padding:10px 8px calc(12px + env(safe-area-inset-bottom));
     }
     .tab{
       width:25%;
@@ -76,27 +77,40 @@
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:4px;
-      font-size:18px;
+      gap:6px;
+      font-size:12px;
+      font-weight:750;
       padding:6px 0;
       position:relative;
       user-select:none;
     }
-    .tab span{font-size:12px; font-weight:700}
+    .tab .ico{
+      width:22px; height:22px;
+      display:block;
+    }
+    .tab svg{
+      width:22px; height:22px;
+      stroke:currentColor;
+      fill:none;
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
     .tab.active{color:var(--ink)}
     .tab.active::after{
       content:"";
       position:absolute;
       bottom:2px;
-      width:36px;
+      width:34px;
       height:4px;
       background:var(--red);
       border-radius:999px;
       transform:rotate(-10deg);
     }
+
     .badge{
       position:absolute;
-      top:2px;
+      top:0px;
       right:28%;
       min-width:18px;
       height:18px;
@@ -121,37 +135,32 @@
       border:1px solid var(--line);
       background:#fff;
     }
-    .catalogHead .big{
+    .bigWrap{
+      position:relative;
+      display:inline-block;
+    }
+    .big{
       margin:0;
       font-size:34px;
       font-weight:950;
       letter-spacing:-1.2px;
       text-transform:none;
-    }
-    .strikeLine{
-      margin-top:10px;
       display:inline-block;
       position:relative;
-      font-size:18px;
-      font-weight:500;
-      letter-spacing:-.4px;
-      text-transform:none;
-      padding:4px 2px;
+      z-index:1;
     }
-    /* “кистевой” слэш поверх слова */
-    .strikeLine::after{
+    /* Зачёркивание как на скрине (кистевой мазок, слегка под углом) */
+    .bigWrap::after{
       content:"";
       position:absolute;
-      left:-8%;
-      top:52%;
-      width:116%;
+      left:-6%;
+      top:48%;
+      width:112%;
       height:18px;
-      transform:rotate(-14deg);
-      opacity:.95;
+      transform:rotate(-7deg);
+      opacity:.98;
       pointer-events:none;
-
-      /* SVG мазок кисти (data URI) */
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='80' viewBox='0 0 600 80'%3E%3Cpath d='M20 50 C80 15 140 70 210 40 C290 5 350 75 430 36 C500 2 540 55 580 28' fill='none' stroke='%23DF3A2C' stroke-width='18' stroke-linecap='round' stroke-linejoin='round' opacity='0.95'/%3E%3Cpath d='M25 54 C90 24 145 68 215 44 C290 18 355 68 435 40 C505 16 545 56 575 34' fill='none' stroke='%23DF3A2C' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' opacity='0.55'/%3E%3C/svg%3E") no-repeat center;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='120' viewBox='0 0 700 120'%3E%3Cpath d='M20 70 C140 35 220 95 340 62 C470 26 560 84 680 48' fill='none' stroke='%23DF3A2C' stroke-width='18' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M28 76 C150 48 230 96 348 70 C478 44 566 90 672 60' fill='none' stroke='%23DF3A2C' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' opacity='0.55'/%3E%3C/svg%3E") no-repeat center;
       background-size:100% 100%;
       filter:saturate(1.05);
     }
@@ -162,6 +171,7 @@
       gap:8px;
       overflow:auto;
       padding:2px 0 8px;
+      -webkit-overflow-scrolling: touch;
     }
     .chip{
       flex:0 0 auto;
@@ -206,41 +216,56 @@
       justify-content:center;
       font-size:38px;
       font-weight:950;
-      color:rgba(0,0,0,.70);
+      color:rgba(0,0,0,.68);
       letter-spacing:-2px;
       user-select:none;
     }
-    .img .cornerBrush{
-      position:absolute;
-      right:-26px;
-      bottom:18px;
-      width:100px;
-      height:16px;
-      transform:rotate(-22deg);
-      opacity:.92;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='60' viewBox='0 0 240 60'%3E%3Cpath d='M10 35 C40 10 70 52 100 30 C140 2 170 52 210 18' fill='none' stroke='%23DF3A2C' stroke-width='14' stroke-linecap='round' stroke-linejoin='round' opacity='0.9'/%3E%3C/svg%3E") no-repeat center;
-      background-size:100% 100%;
-    }
+
+    /* Modern cart circle on photo */
     .img .cartBtn{
       position:absolute;
       right:10px;
       bottom:10px;
-      width:36px;
-      height:36px;
-      border-radius:50%;
-      border:0;
-      background:rgba(0,0,0,.55);
-      color:#fff;
-      font-size:18px;
+      width:40px;
+      height:40px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.14);
+      background:rgba(255,255,255,.92);
+      color:var(--ink);
       display:flex;
       align-items:center;
       justify-content:center;
       cursor:pointer;
+      box-shadow:0 6px 16px rgba(0,0,0,.12);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
-    .img .cartBtn:active{transform:scale(.96)}
+    .img .cartBtn svg{
+      width:20px; height:20px;
+      stroke:currentColor;
+      fill:none;
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .img .cartBtn:active{transform:scale(.97)}
+    /* маленький красный “мазок” как фирменный акцент */
+    .img .cartBtn::after{
+      content:"";
+      position:absolute;
+      right:-6px;
+      bottom:9px;
+      width:20px;
+      height:10px;
+      transform:rotate(-18deg);
+      opacity:.9;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cpath d='M10 35 C35 18 55 44 80 26 C96 16 106 30 112 22' fill='none' stroke='%23DF3A2C' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;
+      background-size:100% 100%;
+      pointer-events:none;
+    }
 
     .body{padding:10px 10px 12px}
-    /* тоньше и легче */
+    /* тоньше, проще */
     .title{
       font-weight:400;
       font-size:14px;
@@ -273,6 +298,7 @@
       background:#fff;
       font-size:18px;
       cursor:pointer;
+      color:var(--ink);
     }
     .qty button:disabled{opacity:.35; cursor:default}
     .qty span{min-width:18px; text-align:center}
@@ -285,7 +311,6 @@
       margin:6px 0 12px;
       text-transform:none;
     }
-
     .empty{
       min-height:58vh;
       display:flex;
@@ -319,6 +344,7 @@
       background:#fff;
       font-weight:900;
       cursor:pointer;
+      color:var(--ink);
     }
     .btn.red{
       border-color:var(--red);
@@ -326,7 +352,6 @@
       background:var(--red);
     }
     .btn:active{transform:scale(.99)}
-
     .cartList{
       display:flex;
       flex-direction:column;
@@ -381,6 +406,7 @@
       padding:10px 12px;
       font-weight:900;
       cursor:pointer;
+      color:var(--ink);
     }
 
     /* Profile */
@@ -424,6 +450,7 @@
       padding:10px 12px;
       font-weight:900;
       cursor:pointer;
+      color:var(--ink);
     }
     .list{
       display:flex;
@@ -442,7 +469,7 @@
       font-size:13px;
     }
 
-    /* Simple modal */
+    /* Modal + sheet (scroll inside, background locked) */
     .modal{
       position:fixed;
       inset:0;
@@ -452,14 +479,18 @@
       justify-content:center;
       z-index:200;
       padding:12px;
+      overscroll-behavior: contain;
     }
     .sheet{
       width:min(560px, 100%);
+      max-height:92vh;
       background:#fff;
       border-radius:22px;
       border:1px solid rgba(0,0,0,.08);
       box-shadow:0 10px 30px rgba(0,0,0,.18);
       overflow:hidden;
+      display:flex;
+      flex-direction:column;
     }
     .sheetHead{
       padding:14px 14px 10px;
@@ -468,7 +499,7 @@
       justify-content:space-between;
       gap:10px;
       background:var(--mint);
-      position:relative;
+      flex:0 0 auto;
     }
     .sheetTitle{
       font-weight:900;
@@ -483,12 +514,16 @@
       font-size:18px;
       cursor:pointer;
     }
+
     .sheetBody{
       padding:14px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      flex:1 1 auto;
+      touch-action: pan-y;
     }
-    .field{
-      margin-bottom:12px;
-    }
+
+    .field{margin-bottom:12px;}
     label{
       display:block;
       font-weight:800;
@@ -502,6 +537,8 @@
       border:1px solid rgba(0,0,0,.14);
       font-size:16px;
       outline:none;
+      color:var(--ink);
+      background:#fff;
     }
     input:focus{border-color:rgba(0,0,0,.35)}
     .err{
@@ -529,6 +566,7 @@
       cursor:pointer;
       background:#fff;
       user-select:none;
+      color:var(--ink);
     }
     .radio.on{
       border-color:var(--ink);
@@ -549,6 +587,7 @@
       display:flex;
       justify-content:center;
       background:#fff;
+      flex:0 0 auto;
     }
     .note{
       margin-top:8px;
@@ -558,7 +597,7 @@
       line-height:1.25;
     }
 
-    /* Order details list in modal */
+    /* Order details modal list */
     .miniList{
       border:1px solid var(--line);
       border-radius:16px;
@@ -598,12 +637,12 @@
     </div>
 
     <div class="content">
-
       <!-- CATALOG -->
       <section id="page-catalog">
         <div class="catalogHead">
-          <h1 class="big">Ne buket</h1>
-          <div class="strikeLine">Ne buket</div>
+          <div class="bigWrap">
+            <h1 class="big">Ne buket</h1>
+          </div>
         </div>
 
         <div class="chips" id="cats"></div>
@@ -666,26 +705,44 @@
         </div>
       </section>
 
-      <!-- HOW (оставил, вдруг пригодится) -->
+      <!-- HOW -->
       <section id="page-how" class="hidden">
-        <div class="h2">Как это работает</div>
+        <div class="h2">Как</div>
         <div class="panel" style="text-align:left">
-          <div class="p" style="margin:0">
-            Здесь позже можно разместить правила: сроки, замены, условия доставки/самовывоза.
-          </div>
+          <div class="p" style="margin:0">Сюда позже: условия, сроки, замены, самовывоз.</div>
         </div>
       </section>
-
     </div>
 
     <nav class="bottomnav">
-      <a href="#catalog" class="tab active" id="tab-catalog">☰<span>Каталог</span></a>
+      <a href="#catalog" class="tab active" id="tab-catalog">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </span>
+        <span>Каталог</span>
+      </a>
+
       <a href="#cart" class="tab" id="tab-cart">
-        🛒<span>Корзина</span>
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M6 6h15l-2 8H7L6 6Z"/><path d="M7 14l-1 5h13"/><path d="M9 20a1 1 0 1 0 0.01 0"/><path d="M17 20a1 1 0 1 0 0.01 0"/></svg>
+        </span>
+        <span>Корзина</span>
         <div class="badge hidden" id="cartBadge">0</div>
       </a>
-      <a href="#profile" class="tab" id="tab-profile">👤<span>Профиль</span></a>
-      <a href="#how" class="tab" id="tab-how">✳️<span>Как</span></a>
+
+      <a href="#profile" class="tab" id="tab-profile">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><path d="M12 12a4 4 0 1 0-0.01 0"/></svg>
+        </span>
+        <span>Профиль</span>
+      </a>
+
+      <a href="#how" class="tab" id="tab-how">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 18h.01"/><path d="M9.5 9.5a2.5 2.5 0 1 1 4 2c-.9.6-1.5 1-1.5 2.5"/><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20Z"/></svg>
+        </span>
+        <span>Как</span>
+      </a>
     </nav>
   </div>
 
@@ -693,7 +750,7 @@
   <div class="modal hidden" id="checkoutModal">
     <div class="sheet">
       <div class="sheetHead">
-        <div class="sheetTitle" id="checkoutTitle">Оформление</div>
+        <div class="sheetTitle">Оформление</div>
         <button class="xbtn" id="closeCheckout">✕</button>
       </div>
 
@@ -797,7 +854,6 @@
 
     // Data
     const CATEGORIES = ["Все","Охапки","Сеты","Зелень","Экзотика","Сезонное"];
-
     const PRODUCTS = Array.from({length: 12}).map((_, i) => ({
       id: "p" + (i + 1),
       title: "Название товара " + (i + 1),
@@ -886,9 +942,17 @@
         <div class="card">
           <div class="img">
             <div class="ph">${p.ph}</div>
-            <div class="cornerBrush" aria-hidden="true"></div>
-            <button class="cartBtn" data-open-cart="1" title="Открыть корзину">🛒</button>
+
+            <button class="cartBtn" data-open-cart="1" title="Открыть корзину" aria-label="Открыть корзину">
+              <svg viewBox="0 0 24 24">
+                <path d="M6 6h15l-2 8H7L6 6Z"></path>
+                <path d="M7 14l-1 5h13"></path>
+                <path d="M9 20a1 1 0 1 0 0.01 0"></path>
+                <path d="M17 20a1 1 0 1 0 0.01 0"></path>
+              </svg>
+            </button>
           </div>
+
           <div class="body">
             <div class="title">${p.title}</div>
             <div class="row">
@@ -974,6 +1038,30 @@
       };
     }
 
+    // ===== Modal scroll lock (fix iOS keyboard + background scroll) =====
+    let lockDepth = 0;
+    let scrollTop = 0;
+    function lockScroll(){
+      lockDepth++;
+      if (lockDepth > 1) return;
+      scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollTop}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+    }
+    function unlockScroll(){
+      lockDepth = Math.max(0, lockDepth - 1);
+      if (lockDepth !== 0) return;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      window.scrollTo(0, scrollTop);
+    }
+
     // ===== Checkout modal + validation =====
     const checkoutModal = $("checkoutModal");
     const checkoutFormView = $("checkoutFormView");
@@ -988,11 +1076,12 @@
     const cHouse = $("cHouse");
     const cApt = $("cApt");
     const noApt = $("noApt");
+    const aptField = $("aptField");
 
-    let mode = "delivery"; // default
+    let mode = "delivery";
 
-    function openModal(el){ el.classList.remove("hidden"); }
-    function closeModal(el){ el.classList.add("hidden"); }
+    function openModal(el){ el.classList.remove("hidden"); lockScroll(); }
+    function closeModal(el){ el.classList.add("hidden"); unlockScroll(); }
 
     function clearErrors(){
       ["eName","ePhone","eMode","eStreet","eHouse","eApt"].forEach(id => {
@@ -1008,13 +1097,11 @@
     }
 
     function formatPhone(raw){
-      // keep digits only
       let d = (raw || "").replace(/\D/g, "");
-      // allow user to type starting with 7/8/9 etc, we normalize to +7 + 10 digits
       if (d.startsWith("8")) d = "7" + d.slice(1);
       if (d.startsWith("9")) d = "7" + d;
       if (!d.startsWith("7")) d = "7" + d;
-      d = d.slice(0, 11); // 7 + 10 digits
+      d = d.slice(0, 11);
 
       const a = d.slice(1, 4);
       const b = d.slice(4, 7);
@@ -1030,7 +1117,6 @@
 
       return { formatted: out, digits: d };
     }
-
     cPhone.addEventListener("input", () => {
       const f = formatPhone(cPhone.value);
       cPhone.value = f.formatted;
@@ -1045,12 +1131,13 @@
     optDelivery.onclick = () => setMode("delivery");
     optPickup.onclick = () => setMode("pickup");
 
+    // Hide apartment field when "no apartment"
     noApt.addEventListener("change", () => {
       if (noApt.checked) {
         cApt.value = "";
-        cApt.disabled = true;
+        aptField.classList.add("hidden");
       } else {
-        cApt.disabled = false;
+        aptField.classList.remove("hidden");
       }
     });
 
@@ -1060,6 +1147,9 @@
       checkoutSuccessView.classList.add("hidden");
       setMode(mode || "delivery");
       openModal(checkoutModal);
+
+      // scroll form to top every time
+      checkoutFormView.scrollTo({ top: 0, behavior: "instant" });
     };
 
     $("closeCheckout").onclick = () => closeModal(checkoutModal);
@@ -1068,16 +1158,14 @@
       showPage("profile");
     };
 
-    function genOrderId(){
-      return String(Date.now()).slice(-6); // простой, но достаточно
-    }
+    function genOrderId(){ return String(Date.now()).slice(-6); }
 
     function validateCheckout(){
       clearErrors();
 
       const name = (cName.value || "").trim();
       const phoneInfo = formatPhone(cPhone.value);
-      const phoneDigits = phoneInfo.digits; // 11 digits, starts with 7
+      const phoneDigits = phoneInfo.digits;
 
       if (!name) setError("eName", "Укажите имя");
       if (phoneDigits.length !== 11) setError("ePhone", "Укажите телефон полностью");
@@ -1094,11 +1182,9 @@
         if (!noApt.checked && !apt) setError("eApt", "Укажите квартиру или отметьте “Нет квартиры”");
       }
 
-      // any errors visible?
       const any = ["eName","ePhone","eMode","eStreet","eHouse","eApt"].some(id => $(id).style.display === "block");
       if (any) return null;
 
-      // Build address
       let address = "Самовывоз";
       if (mode === "delivery") {
         const street = (cStreet.value || "").trim();
@@ -1143,17 +1229,13 @@
       activeOrderId = order.id;
       saveActive();
 
-      // очистим корзину
       Object.keys(cart).forEach(k => delete cart[k]);
       saveCart();
 
-      // отправим боту (если он слушает web_app_data)
       tg?.sendData(JSON.stringify({ action:"order_in_work", order }));
 
-      // success screen
       checkoutFormView.classList.add("hidden");
       checkoutSuccessView.classList.remove("hidden");
-
       render();
     };
 
@@ -1171,10 +1253,7 @@
       `).join("");
 
       $("orderBody").innerHTML = `
-        <div class="miniList">
-          ${itemsHtml}
-        </div>
-
+        <div class="miniList">${itemsHtml}</div>
         <div class="miniList" style="margin-top:12px">
           <div class="miniRow"><div><b>Получение</b><br><span>${order.mode === "delivery" ? "Доставка" : "Самовывоз"}</span></div></div>
           <div class="miniRow"><div><b>Адрес</b><br><span>${order.address}</span></div></div>
@@ -1186,9 +1265,7 @@
       openModal(orderModal);
     }
 
-    // Profile rendering
     function renderProfile(){
-      // last address from last order
       const last = orders[0];
       $("lastAddress").textContent = last ? last.address : "Нет данных";
 
@@ -1209,16 +1286,64 @@
       $("openActive").onclick = () => openOrderDetails(active);
     }
 
-    // History button (placeholder: покажем последний заказ)
     $("historyBtn").onclick = () => {
-      if (!orders.length) {
-        alert("История заказов пока пустая.");
-        return;
-      }
+      if (!orders.length) { alert("История заказов пока пустая."); return; }
       openOrderDetails(orders[0]);
     };
 
-    // Render all
+    function renderCart(){
+      const empty = Object.keys(cart).length === 0;
+      $("cartEmpty").classList.toggle("hidden", !empty);
+      $("cartFilled").classList.toggle("hidden", empty);
+      if (empty) return;
+
+      $("cartList").innerHTML = Object.entries(cart).map(([id, qty]) => {
+        const p = PRODUCTS.find(x => x.id === id);
+        if (!p) return "";
+        return `
+          <div class="cartItem">
+            <div class="cartLeft">
+              <div class="cartName">${p.title}</div>
+              <div class="cartMeta">${p.price.toLocaleString("ru-RU")} ₽ • ${p.cat}</div>
+            </div>
+            <div class="qty">
+              <button data-dec="${p.id}">–</button>
+              <span>${qty}</span>
+              <button data-inc="${p.id}">+</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      $("cartTotal").textContent = "Итого: " + cartTotal().toLocaleString("ru-RU") + " ₽";
+
+      $("cartList").onclick = (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        const inc = btn.dataset.inc;
+        const dec = btn.dataset.dec;
+
+        if (inc) { cart[inc] = (cart[inc] || 0) + 1; saveCart(); render(); }
+        if (dec) {
+          cart[dec] = (cart[dec] || 0) - 1;
+          if (cart[dec] <= 0) delete cart[dec];
+          saveCart(); render();
+        }
+      };
+
+      $("clearCart").onclick = () => {
+        Object.keys(cart).forEach(k => delete cart[k]);
+        saveCart();
+        render();
+      };
+    }
+
+    function renderBadge(){
+      const n = cartCount();
+      $("cartBadge").textContent = String(n);
+      $("cartBadge").classList.toggle("hidden", n === 0);
+    }
+
     function render(){
       renderChips();
       renderGrid();
@@ -1227,7 +1352,7 @@
       renderProfile();
     }
 
-    // Initial page
+    // initial
     const start = (location.hash || "#catalog").replace("#","");
     showPage(["catalog","cart","profile","how"].includes(start) ? start : "catalog");
     render();
